@@ -1,0 +1,311 @@
+[
+ {
+  "id": "8654_sliver",
+  "bg": "dark",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "nholes": 4
+  },
+  "cls": "P",
+  "cert": true,
+  "rho": 0.8013224693309561,
+  "vinf": 26.736336379153993,
+  "kappa50": 0.004553461497274469,
+  "kappa95": 0.012231560027856992,
+  "roi": 0.246795654296875,
+  "dead": 0.11605045134165945
+ },
+ {
+  "id": "5722_sliver",
+  "bg": "plane",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "nholes": 2
+  },
+  "cls": "P",
+  "cert": true,
+  "rho": 0.7435620479131934,
+  "vinf": 39.79175956836056,
+  "kappa50": 0.00260347639423313,
+  "kappa95": 0.006816023847482038,
+  "roi": 0.1939697265625,
+  "dead": 0.06552863436123348
+ },
+ {
+  "id": "3580_arc",
+  "bg": "dark",
+  "branch": "arc",
+  "meta": {
+   "kind": "arc",
+   "nholes": 1
+  },
+  "cls": "P",
+  "cert": true,
+  "rho": 0.8695742557198242,
+  "vinf": 38.9433141294816,
+  "kappa50": 0.0036767494640016973,
+  "kappa95": 0.015228040817977573,
+  "roi": 0.253387451171875,
+  "dead": 0.030651571721064676
+ },
+ {
+  "id": "5902_blob",
+  "bg": "none",
+  "branch": "blob",
+  "meta": {
+   "kind": "blob",
+   "nholes": 4
+  },
+  "cls": "P",
+  "cert": false,
+  "rho": 1.38798776502957,
+  "vinf": 139.9953445112164,
+  "kappa50": 0.0021861385295167493,
+  "kappa95": 0.006041502679747542,
+  "roi": 1.0,
+  "dead": 0.053314208984375
+ },
+ {
+  "id": "7866_edge",
+  "bg": "plane",
+  "branch": "edge",
+  "meta": {
+   "kind": "edge",
+   "nholes": 3
+  },
+  "cls": "U",
+  "cert": false,
+  "rho": null,
+  "vinf": null,
+  "kappa50": 0.004951931969724893,
+  "kappa95": 0.018662987424821396,
+  "roi": 0.241302490234375,
+  "dead": 0.09978500063235109
+ },
+ {
+  "id": "6434_cut",
+  "bg": "none",
+  "branch": "cut",
+  "meta": {
+   "kind": "cut",
+   "nholes": 1
+  },
+  "cls": "U",
+  "cert": false,
+  "rho": null,
+  "vinf": null,
+  "kappa50": 0.002337809750156525,
+  "kappa95": 0.010055714937504586,
+  "roi": 1.0,
+  "dead": 0.03515625
+ },
+ {
+  "id": "1950_degraded",
+  "bg": "dark",
+  "branch": "degraded",
+  "meta": {
+   "kind": "degraded",
+   "nholes": 0,
+   "mode": "defocus"
+  },
+  "cls": "R",
+  "cert": false,
+  "rho": null,
+  "vinf": null,
+  "kappa50": 0.004613645096924532,
+  "kappa95": 0.01452903661706708,
+  "roi": 0.24249267578125,
+  "dead": 0.0
+ },
+ {
+  "id": "2456_sliver",
+  "bg": "none",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "nholes": 2
+  },
+  "cls": "P",
+  "cert": true,
+  "rho": 0.8893607095489561,
+  "vinf": 40.50231514735925,
+  "kappa50": 0.00368870042632073,
+  "kappa95": 0.017012776229874,
+  "roi": 1.0,
+  "dead": 0.0271148681640625
+ },
+ {
+  "id": "9572_arc",
+  "bg": "plane",
+  "branch": "arc",
+  "meta": {
+   "kind": "arc",
+   "nholes": 2
+  },
+  "cls": "P",
+  "cert": true,
+  "rho": 0.9372332503653028,
+  "vinf": 31.166698941033445,
+  "kappa50": 0.005276160613476867,
+  "kappa95": 0.016905485851291174,
+  "roi": 0.2447052001953125,
+  "dead": 0.041903099083369706
+ },
+ {
+  "id": "4237_edge",
+  "bg": "dark",
+  "branch": "edge",
+  "meta": {
+   "kind": "edge",
+   "nholes": 2
+  },
+  "cls": "U",
+  "cert": false,
+  "rho": null,
+  "vinf": null,
+  "kappa50": 0.0023966975852475285,
+  "kappa95": 0.0030822787481144935,
+  "roi": 0.2412872314453125,
+  "dead": 0.04224372351862392
+ },
+ {
+  "id": "8756_degraded",
+  "bg": "none",
+  "branch": "degraded",
+  "meta": {
+   "kind": "degraded",
+   "nholes": 0,
+   "mode": "lowmod"
+  },
+  "cls": "R",
+  "cert": false,
+  "rho": null,
+  "vinf": null,
+  "kappa50": 0.00337101333638618,
+  "kappa95": 0.014764695363594423,
+  "roi": 1.0,
+  "dead": 0.0
+ },
+ {
+  "id": "5786_sliver",
+  "bg": "dark",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "nholes": 3
+  },
+  "cls": "P",
+  "cert": true,
+  "rho": 0.5968476481920415,
+  "vinf": 33.324360437527545,
+  "kappa50": 0.0017256210751606187,
+  "kappa95": 0.007461399352144554,
+  "roi": 0.29327392578125,
+  "dead": 0.0886576482830385
+ },
+ {
+  "id": "8291_arc",
+  "bg": "dark",
+  "branch": "arc",
+  "meta": {
+   "kind": "arc",
+   "nholes": 1
+  },
+  "cls": "P",
+  "cert": true,
+  "rho": 0.7133547539157643,
+  "vinf": 22.07090871802158,
+  "kappa50": 0.004263848246251443,
+  "kappa95": 0.015415650352206963,
+  "roi": 0.259765625,
+  "dead": 0.033952067669172935
+ },
+ {
+  "id": "5373_blob",
+  "bg": "none",
+  "branch": "blob",
+  "meta": {
+   "kind": "blob",
+   "nholes": 4
+  },
+  "cls": "P",
+  "cert": true,
+  "rho": 0.9650750272161656,
+  "vinf": 142.07955557749165,
+  "kappa50": 0.0012189456875945069,
+  "kappa95": 0.002958437867642739,
+  "roi": 1.0,
+  "dead": 0.06768798828125
+ },
+ {
+  "id": "3417_edge",
+  "bg": "dark",
+  "branch": "edge",
+  "meta": {
+   "kind": "edge",
+   "nholes": 3
+  },
+  "cls": "U",
+  "cert": false,
+  "rho": null,
+  "vinf": null,
+  "kappa50": 0.0039317071339853875,
+  "kappa95": 0.0165199972135685,
+  "roi": 0.23748779296875,
+  "dead": 0.08930866101259316
+ },
+ {
+  "id": "8047_cut",
+  "bg": "dark",
+  "branch": "cut",
+  "meta": {
+   "kind": "cut",
+   "nholes": 1
+  },
+  "cls": "U",
+  "cert": false,
+  "rho": null,
+  "vinf": null,
+  "kappa50": 0.00414271624676693,
+  "kappa95": 0.015258729417249286,
+  "roi": 0.2513885498046875,
+  "dead": 0.039817905918057665
+ },
+ {
+  "id": "4092_degraded",
+  "bg": "plane",
+  "branch": "degraded",
+  "meta": {
+   "kind": "degraded",
+   "nholes": 0,
+   "mode": "sat"
+  },
+  "cls": "R",
+  "cert": false,
+  "rho": null,
+  "vinf": null,
+  "kappa50": 0.0017889886648213983,
+  "kappa95": 0.003336418088297067,
+  "roi": 0.2451324462890625,
+  "dead": 0.0
+ },
+ {
+  "id": "1745_sliver",
+  "bg": "dark",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "nholes": 1
+  },
+  "cls": "P",
+  "cert": true,
+  "rho": 0.5719422458842831,
+  "vinf": 11.829777067659169,
+  "kappa50": 0.004199652750058269,
+  "kappa95": 0.01762577744659111,
+  "roi": 0.1838226318359375,
+  "dead": 0.026562629700340335
+ }
+]

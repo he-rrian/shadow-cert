@@ -1,0 +1,58 @@
+# ============================================================
+# shadow-cert / P2 -- files that must NOT go to GitHub
+# Data are shipped out-of-band as tar + SHA256, never via git.
+# ============================================================
+
+# ---- data shards / SynthFringe exports (12.8 GB) ----
+data/
+*.tar
+*.tar.gz
+*.tgz
+
+# ---- GT caches and large arrays ----
+probes/results/gt/
+*.npz
+*.npy
+
+# ---- python ----
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ---- training run artefacts (S5+) ----
+runs/
+checkpoints/
+weights/
+outputs/
+wandb/
+*.pth
+*.pt
+*.ckpt
+*.onnx
+*.safetensors
+train.log
+
+# ---- logs / temp ----
+*.log
+tmp/
+temp/
+
+# ---- OS / editor ----
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+
+# ---- secrets ----
+.env
+.env.*
+*.key
+*.pem
+
+# ---- office lock files & generated binaries ----
+~$*
+*.docx

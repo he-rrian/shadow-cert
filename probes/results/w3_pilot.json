@@ -1,0 +1,925 @@
+[
+ {
+  "id": "SF00000_sliver",
+  "src": "SynthFringe",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "w": 11,
+   "n": 3
+  },
+  "roi": 0.818389892578125,
+  "dead": 0.0980987548828125,
+  "clean": 0.7202911376953125,
+  "kappa_p50": 0.0049343109130859375,
+  "kappa_p95": 0.5096298456192017,
+  "vinf": 118.54621916601215,
+  "rho": 2.2757371237133133,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF00360_sliver",
+  "src": "SynthFringe",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "w": 11,
+   "n": 1
+  },
+  "roi": 0.77020263671875,
+  "dead": 0.0218048095703125,
+  "clean": 0.7483978271484375,
+  "kappa_p50": 0.004229545593261719,
+  "kappa_p95": 0.184031680226326,
+  "vinf": 32.986564142849716,
+  "rho": 0.8579030024763573,
+  "cert": true,
+  "cls": "P"
+ },
+ {
+  "id": "SF00900_disk",
+  "src": "SynthFringe",
+  "branch": "disk",
+  "meta": {
+   "kind": "disk",
+   "d": 44,
+   "n": 3
+  },
+  "roi": 0.8364715576171875,
+  "dead": 0.0815277099609375,
+  "clean": 0.75494384765625,
+  "kappa_p50": 0.010373115539550781,
+  "kappa_p95": 0.5957896709442139,
+  "vinf": 193.81405492121002,
+  "rho": 6.813281736066974,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF01200_edge",
+  "src": "SynthFringe",
+  "branch": "edge",
+  "meta": {
+   "kind": "edge",
+   "d": 54,
+   "n": 1
+  },
+  "roi": 0.951202392578125,
+  "dead": 0.0349273681640625,
+  "clean": 0.9162750244140625,
+  "kappa_p50": 0.005761146545410156,
+  "kappa_p95": 0.2410045564174652,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "U"
+ },
+ {
+  "id": "SF01500_cut",
+  "src": "SynthFringe",
+  "branch": "cut",
+  "meta": {
+   "kind": "cut",
+   "w": 15,
+   "n": 1
+  },
+  "roi": 1.0,
+  "dead": 0.05859375,
+  "clean": 0.94140625,
+  "kappa_p50": 0.002956390380859375,
+  "kappa_p95": 0.010101318359375,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "U"
+ },
+ {
+  "id": "SF01800_degraded",
+  "src": "SynthFringe",
+  "branch": "degraded",
+  "meta": {
+   "kind": "degraded",
+   "mode": "defocus"
+  },
+  "roi": 0.8381195068359375,
+  "dead": 0.0,
+  "clean": 0.8381195068359375,
+  "kappa_p50": 0.006683349609375,
+  "kappa_p95": 0.2847030758857727,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "R"
+ },
+ {
+  "id": "SF02399_sliver",
+  "src": "SynthFringe",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "w": 13,
+   "n": 1
+  },
+  "roi": 0.8677825927734375,
+  "dead": 0.0209503173828125,
+  "clean": 0.846832275390625,
+  "kappa_p50": 0.003960609436035156,
+  "kappa_p95": 0.09988518059253693,
+  "vinf": 43.68474936207258,
+  "rho": 0.964536984729725,
+  "cert": true,
+  "cls": "P"
+ },
+ {
+  "id": "SF02400_arc",
+  "src": "SynthFringe",
+  "branch": "arc",
+  "meta": {
+   "kind": "arc",
+   "w": 10,
+   "n": 2
+  },
+  "roi": 0.626068115234375,
+  "dead": 0.032196044921875,
+  "clean": 0.5938720703125,
+  "kappa_p50": 0.005611419677734375,
+  "kappa_p95": 0.38331079483032227,
+  "vinf": 37.9980087756406,
+  "rho": 1.0925120217803028,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF03000_disk",
+  "src": "SynthFringe",
+  "branch": "disk",
+  "meta": {
+   "kind": "disk",
+   "d": 78,
+   "n": 1
+  },
+  "roi": 0.8116607666015625,
+  "dead": 0.0498809814453125,
+  "clean": 0.76177978515625,
+  "kappa_p50": 0.007282257080078125,
+  "kappa_p95": 0.6234638094902039,
+  "vinf": 260.131150155284,
+  "rho": 6.443680429587314,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF00000_edge",
+  "src": "SynthFringe",
+  "branch": "edge",
+  "meta": {
+   "kind": "edge",
+   "d": 54,
+   "n": 2
+  },
+  "roi": 0.818389892578125,
+  "dead": 0.110015869140625,
+  "clean": 0.7083740234375,
+  "kappa_p50": 0.004575610160827637,
+  "kappa_p95": 0.3935061991214752,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "U"
+ },
+ {
+  "id": "SF00360_degraded",
+  "src": "SynthFringe",
+  "branch": "degraded",
+  "meta": {
+   "kind": "degraded",
+   "mode": "defocus"
+  },
+  "roi": 0.77020263671875,
+  "dead": 0.0,
+  "clean": 0.77020263671875,
+  "kappa_p50": 0.004146575927734375,
+  "kappa_p95": 0.01954936981201172,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "R"
+ },
+ {
+  "id": "SF00600_sliver",
+  "src": "SynthFringe",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "w": 16,
+   "n": 2
+  },
+  "roi": 0.9075775146484375,
+  "dead": 0.0509796142578125,
+  "clean": 0.856597900390625,
+  "kappa_p50": 0.00510406494140625,
+  "kappa_p95": 0.37763673067092896,
+  "vinf": 58.1695730454757,
+  "rho": 1.3588689735130897,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF00900_sliver",
+  "src": "SynthFringe",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "w": 14,
+   "n": 1
+  },
+  "roi": 0.8364715576171875,
+  "dead": 0.0368194580078125,
+  "clean": 0.799652099609375,
+  "kappa_p50": 0.0102691650390625,
+  "kappa_p95": 0.5483181476593018,
+  "vinf": 48.183585870753255,
+  "rho": 1.9888167066047253,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF01200_arc",
+  "src": "SynthFringe",
+  "branch": "arc",
+  "meta": {
+   "kind": "arc",
+   "w": 32,
+   "n": 1
+  },
+  "roi": 0.951202392578125,
+  "dead": 0.001922607421875,
+  "clean": 0.94927978515625,
+  "kappa_p50": 0.00555419921875,
+  "kappa_p95": 0.20778970420360565,
+  "vinf": 12.662903504818384,
+  "rho": 0.637677480320868,
+  "cert": true,
+  "cls": "P"
+ },
+ {
+  "id": "SF01500_disk",
+  "src": "SynthFringe",
+  "branch": "disk",
+  "meta": {
+   "kind": "disk",
+   "d": 70,
+   "n": 3
+  },
+  "roi": 1.0,
+  "dead": 0.1902008056640625,
+  "clean": 0.8097991943359375,
+  "kappa_p50": 0.003082275390625,
+  "kappa_p95": 0.09871673583984375,
+  "vinf": 726.6811924521701,
+  "rho": 7.543408129686788,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF01800_edge",
+  "src": "SynthFringe",
+  "branch": "edge",
+  "meta": {
+   "kind": "edge",
+   "d": 38,
+   "n": 3
+  },
+  "roi": 0.8381195068359375,
+  "dead": 0.10968017578125,
+  "clean": 0.7284393310546875,
+  "kappa_p50": 0.00734710693359375,
+  "kappa_p95": 0.5008552670478821,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "U"
+ },
+ {
+  "id": "SF02399_cut",
+  "src": "SynthFringe",
+  "branch": "cut",
+  "meta": {
+   "kind": "cut",
+   "w": 10,
+   "n": 1
+  },
+  "roi": 0.8677825927734375,
+  "dead": 0.038726806640625,
+  "clean": 0.8290557861328125,
+  "kappa_p50": 0.003856658935546875,
+  "kappa_p95": 0.031696319580078125,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "U"
+ },
+ {
+  "id": "SF02400_degraded",
+  "src": "SynthFringe",
+  "branch": "degraded",
+  "meta": {
+   "kind": "degraded",
+   "mode": "sat"
+  },
+  "roi": 0.626068115234375,
+  "dead": 0.0,
+  "clean": 0.626068115234375,
+  "kappa_p50": 0.00537872314453125,
+  "kappa_p95": 0.18464744091033936,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "R"
+ },
+ {
+  "id": "SF03000_sliver",
+  "src": "SynthFringe",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "w": 29,
+   "n": 1
+  },
+  "roi": 0.8116607666015625,
+  "dead": 0.0475921630859375,
+  "clean": 0.764068603515625,
+  "kappa_p50": 0.007070064544677734,
+  "kappa_p95": 0.6059930324554443,
+  "vinf": 136.95131965444853,
+  "rho": 3.495853188289082,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF00000_arc",
+  "src": "SynthFringe",
+  "branch": "arc",
+  "meta": {
+   "kind": "arc",
+   "w": 9,
+   "n": 1
+  },
+  "roi": 0.818389892578125,
+  "dead": 0.0197906494140625,
+  "clean": 0.7985992431640625,
+  "kappa_p50": 0.0047607421875,
+  "kappa_p95": 0.3418857455253601,
+  "vinf": 28.551697621185703,
+  "rho": 0.8464727948929214,
+  "cert": true,
+  "cls": "P"
+ },
+ {
+  "id": "SF00360_disk",
+  "src": "SynthFringe",
+  "branch": "disk",
+  "meta": {
+   "kind": "disk",
+   "d": 60,
+   "n": 1
+  },
+  "roi": 0.77020263671875,
+  "dead": 0.0430450439453125,
+  "clean": 0.7271575927734375,
+  "kappa_p50": 0.004204750061035156,
+  "kappa_p95": 0.11058135330677032,
+  "vinf": 270.28519850161047,
+  "rho": 4.031336473394727,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF00600_edge",
+  "src": "SynthFringe",
+  "branch": "edge",
+  "meta": {
+   "kind": "edge",
+   "d": 60,
+   "n": 1
+  },
+  "roi": 0.9075775146484375,
+  "dead": 0.0391082763671875,
+  "clean": 0.86846923828125,
+  "kappa_p50": 0.00469207763671875,
+  "kappa_p95": 0.27752685546875,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "U"
+ },
+ {
+  "id": "SF00900_degraded",
+  "src": "SynthFringe",
+  "branch": "degraded",
+  "meta": {
+   "kind": "degraded",
+   "mode": "lowmod"
+  },
+  "roi": 0.8364715576171875,
+  "dead": 0.0,
+  "clean": 0.8364715576171875,
+  "kappa_p50": 0.00992584228515625,
+  "kappa_p95": 0.5243377685546875,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "R"
+ },
+ {
+  "id": "SF01200_sliver",
+  "src": "SynthFringe",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "w": 15,
+   "n": 2
+  },
+  "roi": 0.951202392578125,
+  "dead": 0.072479248046875,
+  "clean": 0.87872314453125,
+  "kappa_p50": 0.005554914474487305,
+  "kappa_p95": 0.42168503999710083,
+  "vinf": 43.31541520014088,
+  "rho": 1.179699177231658,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF01500_sliver",
+  "src": "SynthFringe",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "w": 24,
+   "n": 3
+  },
+  "roi": 1.0,
+  "dead": 0.0811309814453125,
+  "clean": 0.9188690185546875,
+  "kappa_p50": 0.003063201904296875,
+  "kappa_p95": 0.06671981513500214,
+  "vinf": 145.48944360803796,
+  "rho": 1.8323939612522429,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF01800_arc",
+  "src": "SynthFringe",
+  "branch": "arc",
+  "meta": {
+   "kind": "arc",
+   "w": 48,
+   "n": 2
+  },
+  "roi": 0.8381195068359375,
+  "dead": 0.093475341796875,
+  "clean": 0.7446441650390625,
+  "kappa_p50": 0.006683349609375,
+  "kappa_p95": 0.38976287841796875,
+  "vinf": 167.57839196309726,
+  "rho": 3.9788257686366197,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF02399_disk",
+  "src": "SynthFringe",
+  "branch": "disk",
+  "meta": {
+   "kind": "disk",
+   "d": 48,
+   "n": 1
+  },
+  "roi": 0.8677825927734375,
+  "dead": 0.0273590087890625,
+  "clean": 0.840423583984375,
+  "kappa_p50": 0.00390625,
+  "kappa_p95": 0.06790275871753693,
+  "vinf": 179.87257155774114,
+  "rho": 2.650334796575269,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF02400_edge",
+  "src": "SynthFringe",
+  "branch": "edge",
+  "meta": {
+   "kind": "edge",
+   "d": 66,
+   "n": 2
+  },
+  "roi": 0.626068115234375,
+  "dead": 0.08599853515625,
+  "clean": 0.540069580078125,
+  "kappa_p50": 0.005645751953125,
+  "kappa_p95": 0.5165786147117615,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "U"
+ },
+ {
+  "id": "SF03000_cut",
+  "src": "SynthFringe",
+  "branch": "cut",
+  "meta": {
+   "kind": "cut",
+   "w": 11,
+   "n": 3
+  },
+  "roi": 0.8116607666015625,
+  "dead": 0.1711578369140625,
+  "clean": 0.6405029296875,
+  "kappa_p50": 0.00765228271484375,
+  "kappa_p95": 0.6743879318237305,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "U"
+ },
+ {
+  "id": "SF00000_degraded",
+  "src": "SynthFringe",
+  "branch": "degraded",
+  "meta": {
+   "kind": "degraded",
+   "mode": "lowmod"
+  },
+  "roi": 0.818389892578125,
+  "dead": 0.0,
+  "clean": 0.818389892578125,
+  "kappa_p50": 0.004693269729614258,
+  "kappa_p95": 0.27825164794921875,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "R"
+ },
+ {
+  "id": "SF00360_sliver",
+  "src": "SynthFringe",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "w": 28,
+   "n": 1
+  },
+  "roi": 0.77020263671875,
+  "dead": 0.0621795654296875,
+  "clean": 0.7080230712890625,
+  "kappa_p50": 0.004329681396484375,
+  "kappa_p95": 0.2957305908203125,
+  "vinf": 146.76369793818282,
+  "rho": 2.436471360370542,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF00600_arc",
+  "src": "SynthFringe",
+  "branch": "arc",
+  "meta": {
+   "kind": "arc",
+   "w": 12,
+   "n": 1
+  },
+  "roi": 0.9075775146484375,
+  "dead": 0.0281982421875,
+  "clean": 0.8793792724609375,
+  "kappa_p50": 0.004825592041015625,
+  "kappa_p95": 0.3446216583251953,
+  "vinf": 40.95546500716088,
+  "rho": 1.042892577432891,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF00900_disk",
+  "src": "SynthFringe",
+  "branch": "disk",
+  "meta": {
+   "kind": "disk",
+   "d": 96,
+   "n": 1
+  },
+  "roi": 0.8364715576171875,
+  "dead": 0.08251953125,
+  "clean": 0.7539520263671875,
+  "kappa_p50": 0.010022163391113281,
+  "kappa_p95": 0.5364112854003906,
+  "vinf": 246.378809744732,
+  "rho": 8.27366553840022,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF01200_edge",
+  "src": "SynthFringe",
+  "branch": "edge",
+  "meta": {
+   "kind": "edge",
+   "d": 66,
+   "n": 2
+  },
+  "roi": 0.951202392578125,
+  "dead": 0.0753631591796875,
+  "clean": 0.8758392333984375,
+  "kappa_p50": 0.0056915283203125,
+  "kappa_p95": 0.27728214859962463,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "U"
+ },
+ {
+  "id": "SF01500_degraded",
+  "src": "SynthFringe",
+  "branch": "degraded",
+  "meta": {
+   "kind": "degraded",
+   "mode": "sat"
+  },
+  "roi": 1.0,
+  "dead": 0.0,
+  "clean": 1.0,
+  "kappa_p50": 0.0029550790786743164,
+  "kappa_p95": 0.010005474090576172,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "R"
+ },
+ {
+  "id": "SF01800_sliver",
+  "src": "SynthFringe",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "w": 13,
+   "n": 3
+  },
+  "roi": 0.8381195068359375,
+  "dead": 0.0811614990234375,
+  "clean": 0.7569580078125,
+  "kappa_p50": 0.00720977783203125,
+  "kappa_p95": 0.5760599970817566,
+  "vinf": 116.15417161102707,
+  "rho": 3.079475534403445,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF02399_sliver",
+  "src": "SynthFringe",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "w": 7,
+   "n": 1
+  },
+  "roi": 0.8677825927734375,
+  "dead": 0.0178070068359375,
+  "clean": 0.8499755859375,
+  "kappa_p50": 0.0038988590240478516,
+  "kappa_p95": 0.06501483917236328,
+  "vinf": 19.11882458876592,
+  "rho": 0.6510761398151829,
+  "cert": true,
+  "cls": "P"
+ },
+ {
+  "id": "SF02400_arc",
+  "src": "SynthFringe",
+  "branch": "arc",
+  "meta": {
+   "kind": "arc",
+   "w": 9,
+   "n": 3
+  },
+  "roi": 0.626068115234375,
+  "dead": 0.022125244140625,
+  "clean": 0.60394287109375,
+  "kappa_p50": 0.00545501708984375,
+  "kappa_p95": 0.27394866943359375,
+  "vinf": 57.417446885336055,
+  "rho": 1.4107912860957932,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF03000_disk",
+  "src": "SynthFringe",
+  "branch": "disk",
+  "meta": {
+   "kind": "disk",
+   "d": 62,
+   "n": 1
+  },
+  "roi": 0.8116607666015625,
+  "dead": 0.039886474609375,
+  "clean": 0.7717742919921875,
+  "kappa_p50": 0.00701141357421875,
+  "kappa_p95": 0.608062744140625,
+  "vinf": 200.0175125110287,
+  "rho": 4.8777982102493995,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF00000_edge",
+  "src": "SynthFringe",
+  "branch": "edge",
+  "meta": {
+   "kind": "edge",
+   "d": 58,
+   "n": 1
+  },
+  "roi": 0.818389892578125,
+  "dead": 0.023895263671875,
+  "clean": 0.79449462890625,
+  "kappa_p50": 0.004669189453125,
+  "kappa_p95": 0.284130722284317,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "U"
+ },
+ {
+  "id": "SF00360_cut",
+  "src": "SynthFringe",
+  "branch": "cut",
+  "meta": {
+   "kind": "cut",
+   "w": 17,
+   "n": 3
+  },
+  "roi": 0.77020263671875,
+  "dead": 0.1192626953125,
+  "clean": 0.65093994140625,
+  "kappa_p50": 0.00438535213470459,
+  "kappa_p95": 0.08886957913637161,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "U"
+ },
+ {
+  "id": "SF00600_degraded",
+  "src": "SynthFringe",
+  "branch": "degraded",
+  "meta": {
+   "kind": "degraded",
+   "mode": "defocus"
+  },
+  "roi": 0.9075775146484375,
+  "dead": 0.0,
+  "clean": 0.9075775146484375,
+  "kappa_p50": 0.004669189453125,
+  "kappa_p95": 0.20312194526195526,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "R"
+ },
+ {
+  "id": "SF00900_sliver",
+  "src": "SynthFringe",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "w": 14,
+   "n": 1
+  },
+  "roi": 0.8364715576171875,
+  "dead": 0.0224761962890625,
+  "clean": 0.813995361328125,
+  "kappa_p50": 0.0103302001953125,
+  "kappa_p95": 0.6038696765899658,
+  "vinf": 49.67995793239894,
+  "rho": 2.047381637467915,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF01200_arc",
+  "src": "SynthFringe",
+  "branch": "arc",
+  "meta": {
+   "kind": "arc",
+   "w": 26,
+   "n": 3
+  },
+  "roi": 0.951202392578125,
+  "dead": 0.0790557861328125,
+  "clean": 0.8721466064453125,
+  "kappa_p50": 0.006103515625,
+  "kappa_p95": 0.3882644772529602,
+  "vinf": 92.69609757107867,
+  "rho": 2.2147113156333864,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF01500_disk",
+  "src": "SynthFringe",
+  "branch": "disk",
+  "meta": {
+   "kind": "disk",
+   "d": 52,
+   "n": 3
+  },
+  "roi": 1.0,
+  "dead": 0.152374267578125,
+  "clean": 0.847625732421875,
+  "kappa_p50": 0.00307464599609375,
+  "kappa_p95": 0.099365234375,
+  "vinf": 374.5421776558287,
+  "rho": 4.079410503565138,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF01800_edge",
+  "src": "SynthFringe",
+  "branch": "edge",
+  "meta": {
+   "kind": "edge",
+   "d": 66,
+   "n": 2
+  },
+  "roi": 0.8381195068359375,
+  "dead": 0.0719757080078125,
+  "clean": 0.766143798828125,
+  "kappa_p50": 0.006702423095703125,
+  "kappa_p95": 0.3776389956474304,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "U"
+ },
+ {
+  "id": "SF02399_degraded",
+  "src": "SynthFringe",
+  "branch": "degraded",
+  "meta": {
+   "kind": "degraded",
+   "mode": "lowmod"
+  },
+  "roi": 0.8677825927734375,
+  "dead": 0.0,
+  "clean": 0.8677825927734375,
+  "kappa_p50": 0.0038394927978515625,
+  "kappa_p95": 0.0277099609375,
+  "vinf": null,
+  "rho": null,
+  "cert": false,
+  "cls": "R"
+ },
+ {
+  "id": "SF02400_sliver",
+  "src": "SynthFringe",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "w": 6,
+   "n": 2
+  },
+  "roi": 0.626068115234375,
+  "dead": 0.0323486328125,
+  "clean": 0.593719482421875,
+  "kappa_p50": 0.00564122200012207,
+  "kappa_p95": 0.28626346588134766,
+  "vinf": 48.49363386184136,
+  "rho": 1.2845820534566939,
+  "cert": false,
+  "cls": "P"
+ },
+ {
+  "id": "SF03000_sliver",
+  "src": "SynthFringe",
+  "branch": "sliver",
+  "meta": {
+   "kind": "sliver",
+   "w": 13,
+   "n": 2
+  },
+  "roi": 0.8116607666015625,
+  "dead": 0.12762451171875,
+  "clean": 0.6840362548828125,
+  "kappa_p50": 0.007450103759765625,
+  "kappa_p95": 0.7856176495552063,
+  "vinf": 141.6251889211319,
+  "rho": 3.772361611250401,
+  "cert": false,
+  "cls": "P"
+ }
+]
