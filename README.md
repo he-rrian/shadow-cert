@@ -5,18 +5,20 @@
 
 > 规则：题目 2 的所有产物只放本目录；题目 3 的东西不要放进来。临时文件随手删。
 
-## 当前进度（2026-11-17 16:00）
+## 当前进度（2026-11-17 19:00）
 
-S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ⬅ 现在** → S6…S8 ⬜
+S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ⬅ 现在（开工前收尾已做）** → S6…S8 ⬜
 
 - 数据：train 12,000（10.27 GB）/ val 1,500 / test 1,500，共 **12.84 GB**，SHA256 全绿。
 - 分类：val P 109 / U 1141 / R 250；test P 114 / U 1136 / R 250；train P 1364 / U 8636 / R 2000。
 - Tier-1（γ=1，分母 = 含 `vinf` 的样本）：val 14.5% / test 15.2% / train 22.7%。
 - **W4 主口径（γ*=0.75，认证集 + 5% 风险）**：val 认证 **25.7%** / test **25.2%**；认证集内超界 1.04% / 1.59%（CP95 3.23% / 4.05%）；严格 γ=1 为 0/109（CP 2.71%）。
 - **W4 关键发现**：Biharm 总体强于 ORR（Rel 0.876）；ORR 只在 sliver 上最优。G5 门禁已改为“总体 Ours/Biharm ≤0.95，分形状按最强基线”。
-- **SynthFringe 已导出**：SF-val 480 / SF-test 480（六族各 80）；Tier-1 γ=1 = **0/240**（SF 的 κ̂v 约为 MATLAB 的 2.5×，证书不跨域）。**SF-val 重标定后 5%/10% 无解**，20% 档 γ=0.20 为 val 42.5% / test 29.6%（CP 22.7%）→ SF 只作零样本误差评测。
-- **口径文档**：`doc/题目2_定义与实施前置.md` 已升 **v3.1 并转只读**；变更须走“待变更条目”并经批准。
-- 下一步：S5 网络；先看 `doc/交接_S4到S5_2026-11-17.md`，W4 详情见 `doc/W4_基线与校准报告.md`。
+- **SynthFringe 已重导（唯一场景版）**：SF-val 450 / SF-test 450 个含 `vinf` 样本（每族 150，**零复用**；edge/cut/degraded 各 80 只作误差评测）。Tier-1 γ=1 = **0/450 / 0/450**（sound 但零覆盖）。
+- **SF 重标定新结论**：严格协议下 ε=0.05 无解；ε=0.10 的 test CP 15.3%（>10%）、ε=0.20 的 val 最优 γ=0.10 在 test CP 26.4%（不合法）。唯一 CP 合法的 SF-test 20% 证书在保守 **γ=0.20**：162/450（36.0%），CP 15.3%；但 **block 15 CP 32.3%**，且 `n_cert≥180` 与 `CP≤20%` 不可同时满足。→ SF 只作 G5-b 误差评测。
+- **S5 开工前已修**：sliver 相对 ROI 面积阈值（产率 6%→76%，对齐 MATLAB 物理尺度）；洞数 1–3→1–4（对齐冻结生成器）。
+- **口径文档**：`doc/题目2_定义与实施前置.md` 已升 **v3.2**（CP 合法性标注 + SF 唯一场景扩样）并转只读；变更须走“待变更条目”并经批准。
+- 下一步：S5 网络（`w5_dataset.py` → W5–W7 训练）；先看 `doc/交接_S4到S5_2026-11-17.md` 与 `probes/results/w4_sf_recal.md`。
 
 ## 目录
 
@@ -47,8 +49,8 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ⬅ 现在** → S6�
     w1_verify.py         V6 可达性 / V7 闭式界 / V7b 收敛 / V8 κ̂ 校准
     make_fig.py          八面板图
     results\
-  code\                  生成器 / 基线 / 校准 / SF 导出（w3_gen.py, w4_calibrate.py, w4_decide.py, w4_sf_recal.py, w3_gt_blocks.py, verify_w3.py）
-  data\                  train/val/test 分片 + manifest（SHA256 冻结，12.84 GB）；sf_val/sf_test 各 480
+  code\                  生成器 / 基线 / 校准 / SF 导出与校验（w3_gen.py, w4_calibrate.py, w4_decide.py, w4_sf_recal.py, w3_gt_blocks.py, w3_export_sf.py, verify_w3.py, verify_sf.py）
+  data\                  train/val/test 分片 + manifest（SHA256 冻结，12.84 GB）；sf_val/sf_test 各 690（450 vinf + 240 误差评测）
 ```
 
 ## W4 结论（S4 完成，2026-11-17）
@@ -57,8 +59,18 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ⬅ 现在** → S6�
 - **严格对照**：`γ=1` 时 0/109、0/114（CP 2.71% / 2.59%）；`C_5pt_max` 最大 **0.332**（0/193 >1）→ 定理层面 sound。
 - **基线**：Biharm 总体 `Rel-ORR=0.876`，强于 ORR；ORR 只在 sliver 最优（Biharm 1.527）。Identity 2π 失败 60.4%（门禁 >25%）。
 - **门禁**：G4 零违例（CP 口径）✅；`n_cert≥1000`（train 1,364）✅；认证率目标由 35–55% 修订为 `ε=0.05` 下 ≥20%。
-- **SF 外部基准**：SF-val/SF-test 已导出（480/480）；Tier-1 γ=1 均为 0/240（域差），G5-b 只测误差。
-- 细节：`doc/W4_基线与校准报告.md`；交接：`doc/交接_S4到S5_2026-11-17.md`。
+- **SF 外部基准（v3.2 唯一场景版）**：SF-val/SF-test 各 450 个含 `vinf` 样本（每族 150，零复用）；γ=1 均为 0/450。重标定后唯一 CP 合法的 test 20% 证书在保守 γ=0.20（162/450，CP 15.3%），但 **block 15 CP 32.3%**；严格协议下 ε=0.10/0.20 的 val 最优 γ 在 test 均不合法（15.3% > 10%、26.4% > 20%）。G5-b 只测误差。
+- 细节：`doc/W4_基线与校准报告.md`；交接：`doc/交接_S4到S5_2026-11-17.md`；SF 重标定：`probes/results/w4_sf_recal.md`。
+
+## S5 开工前收尾（2026-11-17，指令 1–3）
+
+| 指令 | 状态 | 产物 / 验收 |
+|---|---|---|
+| 1 SF 扩样 → 唯一场景 450 | ✅ | `data/sf_val`、`data/sf_test` 各 690 样本（450 vinf + 240 误差评测），SHA256 全绿；`verify_sf.py` 通过；重跑 `w4_sf_recal.py` |
+| 2 CP 失效行打标记 | ✅ | `W4_基线与校准报告.md` §5（MATLAB ε=0.20 test 行）、`题目2_定义与实施前置.md` v3.2 §4bis.1、`w4_sf_recal.md`（所有 CP>ε 行） |
+| 3 C4 措辞红线 | ✅ | `题目2_一区方案_v2.md` §7.1：禁止/允许措辞 + 必须同框的三个数 + block 15 / oracle 归因 |
+
+> 服务器仍未定（用户：需要传数据时再说，届时提供 SSH）。S5 训练暂不阻塞代码阶段。
 
 ## W1 结论（已完成，G1 全过）
 
@@ -118,10 +130,11 @@ python F:\paper\2\P2\code\w4_calibrate.py report
 python F:\paper\2\P2\code\w4_decide.py
 python F:\paper\2\P2\code\w4_calibrate.py regression
 
-# SynthFringe 外部基准（S5 前置）：blocks 12..17 GT → SF-val / SF-test
+# SynthFringe 外部基准（S5 前置）：blocks 12..17 GT → SF-val / SF-test（唯一场景 450 vinf/ split）
 python F:\paper\2\P2\code\w3_gt_blocks.py
-python F:\paper\2\P2\code\w3_export_sf.py --split val
-python F:\paper\2\P2\code\w3_export_sf.py --split test
+python F:\paper\2\P2\code\w3_export_sf.py --split val  --n-vinf 150 --n-other 80
+python F:\paper\2\P2\code\w3_export_sf.py --split test --n-vinf 150 --n-other 80
+python F:\paper\2\P2\code\verify_sf.py
 python F:\paper\2\P2\code\w4_sf_recal.py
 
 # 探针（S1/S2）
