@@ -177,8 +177,12 @@ def self_test(split="val", n=500, gamma=GAMMA_DEFAULT):
         cov = r["dead"] & (r["roi"] & (~r["clean"]))
         hcov = float(np.percentile(np.abs(r["h"][cov] - r["orr"][cov]), 95)) if cov.any() else 0.0
         h_cov_all.append(hcov)
+        md = r["M"][r["dead"]] if r["dead"].any() else np.array([0.0], np.float32)
+        m_cov = float((md >= 0.25).mean()) if md.size else 0.0
+        m_mean = float(md.mean()) if md.size else 0.0
         br_stats[r["branch"]].append((float(r["h_p95"]), hcov, float(r["iou"]),
-                                      float(r["h_miss"]), int(r["border"]), float(r["obs_p95"])))
+                                      float(r["h_miss"]), int(r["border"]), float(r["obs_p95"]),
+                                      m_cov, m_mean))
     print(f"  labels: P={cnt[0]} U={cnt[1]} R={cnt[2]}  P ratio={100*cnt[0]/n:.1f}% "
           f"(expect ~12.9% for val at gamma=0.75)")
     print(f"  kappa_hat == kappa_hat_ps[1] for sample 0: {not kappa_bad}")
@@ -192,7 +196,8 @@ def self_test(split="val", n=500, gamma=GAMMA_DEFAULT):
         a = np.array(v)
         print(f"    {br:9s} n={len(v):3d}  hP95_all P50={np.median(a[:,0]):6.2f}  "
               f"hP95_cov P50={np.median(a[:,1]):6.2f}  IoU={a[:,2].mean():.3f}  "
-              f"miss={a[:,3].mean():.2f}  border={a[:,4].mean():.2f}  phiP95={a[:,5].mean():.2f}")
+              f"miss={a[:,3].mean():.2f}  border={a[:,4].mean():.2f}  phiP95={a[:,5].mean():.2f}  "
+              f"M_cov={a[:,6].mean():.2f}  M_mean={a[:,7].mean():.2f}")
     if bad:
         print(f"  !! {len(bad)} bad entries; first 5: {bad[:5]}")
     else:
