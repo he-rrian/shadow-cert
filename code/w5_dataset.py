@@ -103,7 +103,7 @@ class W5Dataset:
         roi = np.asarray(s["roi"][i], bool)
         dead = np.asarray(s["dead"][i], bool)
         orr = np.asarray(s["orr"][i], np.float32)
-        kmap = np.asarray(s["kmap"][i], np.float16)
+        kmap = np.asarray(s["kmap"][i], np.float16).astype(np.float32)  # do not diff in float16
         m = json.loads(str(s["meta"][i]))
         y, rho = label_from_meta(m, self.gamma)
         h = np.asarray(f["h"][i], np.float32)
@@ -178,7 +178,7 @@ def self_test(split="val", n=500, gamma=GAMMA_DEFAULT):
         hcov = float(np.percentile(np.abs(r["h"][cov] - r["orr"][cov]), 95)) if cov.any() else 0.0
         h_cov_all.append(hcov)
         br_stats[r["branch"]].append((float(r["h_p95"]), hcov, float(r["iou"]),
-                                      float(r["h_miss"]), int(r["border"])))
+                                      float(r["h_miss"]), int(r["border"]), float(r["obs_p95"])))
     print(f"  labels: P={cnt[0]} U={cnt[1]} R={cnt[2]}  P ratio={100*cnt[0]/n:.1f}% "
           f"(expect ~12.9% for val at gamma=0.75)")
     print(f"  kappa_hat == kappa_hat_ps[1] for sample 0: {not kappa_bad}")
@@ -192,7 +192,7 @@ def self_test(split="val", n=500, gamma=GAMMA_DEFAULT):
         a = np.array(v)
         print(f"    {br:9s} n={len(v):3d}  hP95_all P50={np.median(a[:,0]):6.2f}  "
               f"hP95_cov P50={np.median(a[:,1]):6.2f}  IoU={a[:,2].mean():.3f}  "
-              f"miss={a[:,3].mean():.2f}  border={a[:,4].mean():.2f}")
+              f"miss={a[:,3].mean():.2f}  border={a[:,4].mean():.2f}  phiP95={a[:,5].mean():.2f}")
     if bad:
         print(f"  !! {len(bad)} bad entries; first 5: {bad[:5]}")
     else:

@@ -118,7 +118,7 @@ def carrier_from_image(I, roi):
 
 
 def local_contrast(I, roi, car, win=11):
-    """3-parameter local sinusoid fit -> amplitude / pedestal (texture-invariant)."""
+    """(legacy 11x11 fit; kept for reference only -- not used: too wide for 4-8 px slivers)"""
     H, W = I.shape
     c = np.cos(car); s = np.sin(car)
     m = roi.astype(np.float64)
@@ -133,6 +133,15 @@ def local_contrast(I, roi, car, win=11):
     A = np.maximum(sol[..., 0], 1e-3)
     mod = np.hypot(sol[..., 1], sol[..., 2])
     return mod / A
+
+
+def local_p90(m, win=55, ds=4):
+    """55x55 local P90, evaluated on a 4x-downsampled grid (~0.02 s instead of 1.4 s)."""
+    from scipy.ndimage import percentile_filter
+    H, W = m.shape
+    m4 = cv2.resize(m, (max(8, W // ds), max(8, H // ds)), interpolation=cv2.INTER_AREA)
+    r4 = percentile_filter(m4, 90, size=max(3, int(round(win / ds))), mode="nearest")
+    return cv2.resize(r4, (W, H), interpolation=cv2.INTER_CUBIC)
 
 
 def frontend(I, roi):
@@ -150,19 +159,36 @@ def frontend(I, roi):
     from skimage.restoration import unwrap_phase
     phi_obs = car + unwrap_phase(res)
 
-    con = local_contrast(I, roi, car)
-    p90 = max(float(np.percentile(con[roi], 90)), 1e-6)
-    cn = con / p90
-    tau = 0.55
-    raw = ((cn > tau) & (I > 2) & (I < 250) & roi).astype(np.uint8)
-    raw = cv2.morphologyEx(raw, cv2.MORPH_CLOSE, np.ones((7, 7), np.uint8))
-    clean = cv2.erode(raw, np.ones((5, 5), np.uint8)) > 0       # 2 px collar
-    # The 2 px collar is needed around a HOLE, not around the ROI border.  Without this
-    # restore, every sample gets a false 2 px dead band along the ROI edge, which makes
-    # dead-est touch `~roi` and flags almost everything as border-unreliable.
-    edge_band = roi & (~(cv2.erode(roi.astype(np.uint8), np.ones((5, 5), np.uint8)) > 0))
+    m_est = np.abs(Z)                       # analytic envelope: no fringe-trough oscillation
+    m_ref = local_p90(m_est, win=55)        # 55x55 local P90, larger than a 48 px blob
+    mrel = m_est / (m_ref + 1e-6)
+    tau = 0.40
+    raw = ((mrel >= tau) & (I > 2) & (I < 250) & roi).astype(np.uint8)
+    dead0 = roi & (raw == 0)
+    # remove isolated 1-2 px dead specks; do NOT close the clean mask (7x7 close would
+    # bridge and delete every 4-6 px sliver -- that was the 40% miss bug).
+    n, lab, st, _ = cv2.connectedComponentsWithStats(dead0.astype(np.uint8), 8)
+    for j in range(1, n):
+        if st[j, cv2.CC_STAT_AREA] < 16:
+            dead0[lab == j] = False
+    clean = roi & (~dead0)
+    clean = cv2.erode(clean.astype(np.uint8), np.ones((3, 3), np.uint8)) > 0  # 1 px collar
+    # The 1 px collar is needed around a HOLE, not around the ROI border.  Without this
+    # restore, every sample gets a false dead band along the ROI edge.
+    edge_band = roi & (~(cv2.erode(roi.astype(np.uint8), np.ones((3, 3), np.uint8)) > 0))
     clean = clean | edge_band
     dead = roi & (~clean)
+
+    # soft confidence M_fix: 1.0 on dead/strong degradation, 0.25-1.0 in the texture
+    # transition, 0 on clean.  This keeps the hard dead-zone constraint while giving the
+    # network a residual channel on DTD texture edges (where phi_obs has ~0.55 rad noise).
+    M = np.zeros((H, W), np.float32)
+    M[mrel < 0.45] = 1.0
+    trans = (mrel >= 0.45) & (mrel < 0.75)
+    if trans.any():
+        t = np.clip((mrel[trans] - 0.45) / 0.30, 0, 1)
+        M[trans] = 1.0 - 0.75 * (t * t * (3 - 2 * t))
+    M[~roi] = 0.0
 
     known = roi & (~dead)
     if known.sum() < 16:
@@ -172,11 +198,6 @@ def frontend(I, roi):
     h = W4.harmonic_fill(dead, src)
     h = np.where(dead, h, phi_obs)
 
-    dist = cv2.distanceTransform((~clean).astype(np.uint8), cv2.DIST_L2, 5)
-    s = np.clip(dist / 6.0, 0, 1)
-    M = (s * s * (3 - 2 * s)).astype(np.float32)
-    M[~roi] = 0.0
-    M[clean] = 0.0
     border = bool(dead[0, :].any() or dead[-1, :].any() or dead[:, 0].any() or dead[:, -1].any()
                   or (cv2.dilate(dead.astype(np.uint8), np.ones((3, 3), np.uint8)) > 0)[~roi].any())
     return dict(phi_obs=phi_obs, h=h, M=M, clean=clean, dead=dead,
