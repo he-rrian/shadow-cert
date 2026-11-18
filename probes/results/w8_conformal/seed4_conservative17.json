@@ -1,0 +1,97 @@
+{
+ "ckpt": "runs/w5_p0_seed4/best_stage3.pth",
+ "cal": "val",
+ "test": "test",
+ "n_cal": 1250,
+ "n_test": 1250,
+ "grid": [
+  {
+   "alpha": 0.16,
+   "beta": 0.05,
+   "classes": {
+    "P": {
+     "n_cal": 193,
+     "tau": 3.169856812162951,
+     "n_test": 189,
+     "scene_success": 0.8095238095238095,
+     "mean_coverage": 0.967013082746081,
+     "median_width": 0.38714755188623884
+    },
+    "U": {
+     "n_cal": 1057,
+     "tau": 3.8871999607215497,
+     "n_test": 1061,
+     "scene_success": 0.8162111215834119,
+     "mean_coverage": 0.9581691476093048,
+     "median_width": 0.7302077263480727
+    },
+    "R": {
+     "n_cal": 0,
+     "tau": NaN,
+     "n_test": 0,
+     "scene_success": null,
+     "mean_coverage": null,
+     "median_width": null
+    }
+   },
+   "global_": {
+    "n_cal": 1250,
+    "tau": 3.779441831650864,
+    "scene_success": 0.8104,
+    "mean_coverage": 0.9586138157384015,
+    "median_width": 0.6645065614015125
+   },
+   "coverage_target": 0.95,
+   "pixel_baseline": {
+    "tau": 1.9840484061198318,
+    "n_cal": 2027191,
+    "scene_success": 0.2752,
+    "mean_coverage": 0.8137797479557087
+   }
+  },
+  {
+   "alpha": 0.17,
+   "beta": 0.05,
+   "classes": {
+    "P": {
+     "n_cal": 193,
+     "tau": 3.1576998322275025,
+     "n_test": 189,
+     "scene_success": 0.8095238095238095,
+     "mean_coverage": 0.9666419344787688,
+     "median_width": 0.38566277030169543
+    },
+    "U": {
+     "n_cal": 1057,
+     "tau": 3.806130603423632,
+     "n_test": 1061,
+     "scene_success": 0.7992459943449576,
+     "mean_coverage": 0.9554900360683546,
+     "median_width": 0.7149789056886838
+    },
+    "R": {
+     "n_cal": 0,
+     "tau": NaN,
+     "n_test": 0,
+     "scene_success": null,
+     "mean_coverage": null,
+     "median_width": null
+    }
+   },
+   "global_": {
+    "n_cal": 1250,
+    "tau": 3.726910556149976,
+    "scene_success": 0.8008,
+    "mean_coverage": 0.956913260515731,
+    "median_width": 0.6552704416769544
+   },
+   "coverage_target": 0.95,
+   "pixel_baseline": {
+    "tau": 1.9213876117015074,
+    "n_cal": 2027191,
+    "scene_success": 0.2488,
+    "mean_coverage": 0.8028698217352023
+   }
+  }
+ ]
+}
