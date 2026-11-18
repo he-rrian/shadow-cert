@@ -32,6 +32,7 @@ CACHE = os.path.join(DATA, "frontend")
 PHI_TOL = float(np.pi / 10)
 DELTA_G = 0.13
 GAMMA_DEFAULT = 0.75
+BRANCH_ID = {"sliver": 0, "arc": 1, "blob": 2, "edge": 3, "cut": 4, "degraded": 5}
 
 
 def load_manifest(split):
@@ -60,15 +61,21 @@ def label_from_meta(m, gamma):
 
 
 class W5Dataset:
-    def __init__(self, split, gamma=GAMMA_DEFAULT, augment=False, cache_dir=CACHE):
+    def __init__(self, split, gamma=GAMMA_DEFAULT, augment=False, cache_dir=CACHE, light=False):
         self.split = split
         self.gamma = float(gamma)
         self.augment = bool(augment)
         self.cache_dir = cache_dir
+        self.light = bool(light)
         self.src_dir, self.src_man = load_manifest(split)
         self.fe_man = json.load(open(os.path.join(cache_dir, split, "frontend_manifest.json"), encoding="utf-8"))
         self.src_shards = {s["path"]: s for s in self.src_man["shards"]}
         self.fe_shards = {s["path"]: s for s in self.fe_man["shards"]}
+        self.src_keys = ("I", "phi", "roi", "dead", "meta") if light else \
+                        ("I", "phi", "roi", "dead", "orr", "kmap", "meta")
+        self.fe_keys = ("h", "M", "clean", "carrier", "flip", "sid") if light else \
+                       ("h", "M", "clean", "border", "carrier", "k", "flip", "sid", "iou",
+                        "iou_obs", "obs_p95", "h_p95", "h_miss", "tau", "phi_obs", "dead_pred")
         self.index = []
         for s in self.src_man["shards"]:
             if s["path"] not in self.fe_shards:
@@ -81,15 +88,13 @@ class W5Dataset:
     def _load_src(self, name):
         if name not in self._src:
             z = np.load(os.path.join(self.src_dir, name))
-            self._src[name] = {k: z[k] for k in ("I", "phi", "roi", "dead", "orr", "kmap", "meta")}
+            self._src[name] = {k: z[k] for k in self.src_keys}
         return self._src[name]
 
     def _load_fe(self, name):
         if name not in self._fe:
             z = np.load(os.path.join(self.cache_dir, self.split, name))
-            self._fe[name] = {k: z[k] for k in ("h", "M", "clean", "border", "carrier",
-                                                "k", "flip", "sid", "iou", "iou_obs",
-                                                "obs_p95", "h_p95", "h_miss", "tau")}
+            self._fe[name] = {k: z[k] for k in self.fe_keys}
         return self._fe[name]
 
     def __len__(self):
@@ -102,8 +107,9 @@ class W5Dataset:
         phi = np.asarray(s["phi"][i], np.float32)
         roi = np.asarray(s["roi"][i], bool)
         dead = np.asarray(s["dead"][i], bool)
-        orr = np.asarray(s["orr"][i], np.float32)
-        kmap = np.asarray(s["kmap"][i], np.float16).astype(np.float32)  # do not diff in float16
+        orr = np.asarray(s["orr"][i], np.float32) if "orr" in s else np.zeros((256, 256), np.float32)
+        kmap = (np.asarray(s["kmap"][i], np.float16).astype(np.float32) if "kmap" in s
+                else np.zeros((256, 256), np.float32))  # do not diff in float16
         m = json.loads(str(s["meta"][i]))
         y, rho = label_from_meta(m, self.gamma)
         h = np.asarray(f["h"][i], np.float32)
@@ -122,14 +128,24 @@ class W5Dataset:
             h = h[::-1].copy(); M = M[::-1].copy(); clean = clean[::-1].copy()
 
         return dict(I=I, phi=phi, h=h, M=M, clean=clean, roi=roi, dead=dead, orr=orr, kmap=kmap,
+                    carrier=np.asarray(f["carrier"][i], np.float32),
+                    phi_obs=(np.asarray(f["phi_obs"][i], np.float32) if "phi_obs" in f
+                             else np.zeros((256, 256), np.float32)),
+                    dead_pred=(np.asarray(f["dead_pred"][i], bool) if "dead_pred" in f
+                               else np.zeros((256, 256), bool)),
                     y=np.int64(y), rho=np.float32(rho), sid=np.int32(f["sid"][i]),
-                    branch=m.get("branch", ""), flip=np.int8(flip),
-                    border=np.bool_(f["border"][i]),
+                    idx=np.int32(idx),
+                    branch=m.get("branch", ""),
+                    branch_id=np.int8(BRANCH_ID.get(m.get("branch", ""), -1)),
+                    flip=np.int8(flip),
+                    border=np.bool_(f["border"][i]) if "border" in f else np.bool_(False),
                     kappa_hat=np.float32(m.get("kappa_hat", np.nan)),
                     kappa_hat_ps1=np.float32(m["kappa_hat_ps"][1] if m.get("kappa_hat_ps") else np.nan),
-                    iou=np.float32(f["iou"][i]), iou_obs=np.float32(f["iou_obs"][i]),
-                    obs_p95=np.float32(f["obs_p95"][i]), h_p95=np.float32(f["h_p95"][i]),
-                    h_miss=np.float32(f["h_miss"][i]))
+                    iou=np.float32(f["iou"][i]) if "iou" in f else np.float32(0),
+                    iou_obs=np.float32(f["iou_obs"][i]) if "iou_obs" in f else np.float32(0),
+                    obs_p95=np.float32(f["obs_p95"][i]) if "obs_p95" in f else np.float32(0),
+                    h_p95=np.float32(f["h_p95"][i]) if "h_p95" in f else np.float32(0),
+                    h_miss=np.float32(f["h_miss"][i]) if "h_miss" in f else np.float32(0))
 
 
 def collate(batch):
@@ -227,3 +243,4 @@ if __name__ == "__main__":
         r = collate([ds[0], ds[1]])
         for k, v in r.items():
             print(f"  {k}: {v.shape} {v.dtype}")
+

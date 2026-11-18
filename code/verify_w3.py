@@ -2,7 +2,15 @@
 import json, os, glob, hashlib
 import numpy as np
 
-ROOT = r"F:\paper\2\P2\data"
+ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+
+
+def sha256(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for b in iter(lambda: f.read(1 << 20), b""):
+            h.update(b)
+    return h.hexdigest()
 print(f"{'split':6s}{'shards':>7s}{'samples':>9s}{'GB':>7s}{'sha_ok':>8s}"
       f"{'P':>6s}{'U':>6s}{'R':>6s}  branches")
 tot_n = 0; tot_b = 0; ok_all = True
@@ -21,7 +29,7 @@ for sp in ("train", "val", "test"):
         p = os.path.join(d, s["path"])
         if not os.path.exists(p):
             ok = False; continue
-        h = hashlib.sha256(open(p, "rb").read()).hexdigest()
+        h = sha256(p)
         if h != s["sha256"]:
             ok = False
     n = sum(s["n"] for s in man["shards"])

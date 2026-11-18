@@ -1,4 +1,4 @@
-"""w5_prep_frontend.py -- offline single-frame frontend cache for S5.
+﻿"""w5_prep_frontend.py -- offline single-frame frontend cache for S5.
 
 Why this file exists
 --------------------
@@ -47,6 +47,13 @@ Run:
 """
 import os, sys, json, argparse, hashlib, time, importlib.util
 import numpy as np, cv2
+
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
+    os.environ.setdefault(_v, "1")
+try:
+    cv2.setNumThreads(1)
+except Exception:
+    pass
 
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -144,6 +151,92 @@ def local_p90(m, win=55, ds=4):
     return cv2.resize(r4, (W, H), interpolation=cv2.INTER_CUBIC)
 
 
+def harmonic_fill_neumann(dead, src, roi):
+    """-Delta h = 0 on dead, h = src on known; zero-flux at ROI/image boundary.
+
+    Unlike W4.harmonic_fill, pixels outside ROI are NOT treated as Dirichlet 0:
+    a dead pixel touching the ROI/image border simply drops that neighbour term.
+    """
+    import scipy.sparse as sp, scipy.sparse.linalg as spla
+    unknown = (dead & roi)
+    if not unknown.any():
+        return src.copy()
+    if not (roi & (~unknown)).any():
+        return src.copy()
+    ys, xs = np.where(unknown); pad = 2
+    y0, y1 = max(0, ys.min() - pad), min(dead.shape[0], ys.max() + pad + 1)
+    x0, x1 = max(0, xs.min() - pad), min(dead.shape[1], xs.max() + pad + 1)
+    sub = unknown[y0:y1, x0:x1]; rr = roi[y0:y1, x0:x1]
+    n, k = sub.shape
+    idx = -np.ones((n, k), np.int64); cnt = 0
+    for i in range(n):
+        for j in range(k):
+            if sub[i, j]:
+                idx[i, j] = cnt; cnt += 1
+    A = sp.lil_matrix((cnt, cnt)); b = np.zeros(cnt)
+    for i in range(n):
+        for j in range(k):
+            a = idx[i, j]
+            if a < 0:
+                continue
+            diag = 0
+            for di, dj in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+                ii, jj = i + di, j + dj
+                if ii < 0 or ii >= n or jj < 0 or jj >= k:
+                    continue
+                if not rr[ii, jj]:
+                    continue
+                diag += 1
+                if sub[ii, jj]:
+                    A[a, idx[ii, jj]] = -1.0
+                else:
+                    b[a] += float(src[y0 + ii, x0 + jj])
+            A[a, a] = float(diag) if diag > 0 else 1.0
+    u = spla.spsolve(A.tocsr(), b)
+    out = src.astype(np.float64).copy()
+    for i in range(n):
+        for j in range(k):
+            if idx[i, j] >= 0:
+                out[y0 + i, x0 + j] = u[idx[i, j]]
+    return out
+
+
+def harmonic_fill_neumann_safe(dead, src, roi):
+    try:
+        return harmonic_fill_neumann(dead, src, roi)
+    except Exception:
+        return src.copy()
+
+
+SEG_CFG = dict(enabled=False, ckpt="", thr=0.5, dilate=1)
+_SEG_MODEL = None
+
+
+def seg_dead(I, roi, mrel):
+    """learned compact dead mask (prob>thr, remove <8 px specks, 1 px dilation)."""
+    global _SEG_MODEL
+    if _SEG_MODEL is None:
+        import torch
+        from w5_seg import SegNet
+        ck = torch.load(SEG_CFG["ckpt"], map_location="cpu", weights_only=False)
+        m = SegNet(); m.load_state_dict(ck["model"]); m.eval()
+        _SEG_MODEL = m
+    import torch
+    x = np.stack([I.astype(np.float32) / 255.0, roi.astype(np.float32),
+                  np.clip(mrel, 0, 2.5)], 0)[None]
+    with torch.no_grad():
+        prob = torch.sigmoid(_SEG_MODEL(torch.from_numpy(x).float())).numpy()[0, 0]
+    dead = (prob > SEG_CFG["thr"]) & roi
+    n, lab, st, _ = cv2.connectedComponentsWithStats(dead.astype(np.uint8), 8)
+    for j in range(1, n):
+        if st[j, cv2.CC_STAT_AREA] < 8:
+            dead[lab == j] = False
+    if SEG_CFG["dilate"] > 0:
+        k = 2 * int(SEG_CFG["dilate"]) + 1
+        dead = cv2.dilate(dead.astype(np.uint8), np.ones((k, k), np.uint8)) > 0
+    return dead & roi
+
+
 def frontend(I, roi):
     """Single-frame frontend.  Inputs are ONLY I (uint8/float) and roi (bool)."""
     H, W = I.shape
@@ -179,6 +272,18 @@ def frontend(I, roi):
     clean = clean | edge_band
     dead = roi & (~clean)
 
+    if SEG_CFG["enabled"]:
+        # P0: replace the C over-cover mask by the learned compact dead mask.
+        # h is harmonic-filled only on dead, with zero-flux at ROI/image borders.
+        dead = seg_dead(I, roi, mrel)
+        clean = roi & (~dead)
+        M = roi.astype(np.float32)
+        h = harmonic_fill_neumann_safe(dead, phi_obs, roi)
+        border = bool(dead[0, :].any() or dead[-1, :].any() or dead[:, 0].any() or dead[:, -1].any()
+                      or (cv2.dilate(dead.astype(np.uint8), np.ones((3, 3), np.uint8)) > 0)[~roi].any())
+        return dict(phi_obs=phi_obs, h=h, M=M, clean=clean, dead=dead, dead_pred=dead,
+                    carrier=(fy, fx), tau=tau, border=border)
+
     # soft confidence M_fix: 1.0 on dead/strong degradation, 0.25-1.0 in the texture
     # transition, 0 on clean.  This keeps the hard dead-zone constraint while giving the
     # network a residual channel on DTD texture edges (where phi_obs has ~0.55 rad noise).
@@ -190,13 +295,14 @@ def frontend(I, roi):
         M[trans] = 1.0 - 0.75 * (t * t * (3 - 2 * t))
     M[~roi] = 0.0
 
-    known = roi & (~dead)
-    if known.sum() < 16:
+    fill = dead | ((M >= 0.90) & roi)
+    known = roi & (~fill)
+    if known.sum() < 16 or not fill.any():
         return dict(phi_obs=phi_obs, h=phi_obs.copy(), M=np.zeros_like(phi_obs, np.float32),
                     clean=clean, dead=dead, carrier=(fy, fx), tau=tau, border=True)
     src = W4.extend_from(known, np.where(known, phi_obs, 0.0))
-    h = W4.harmonic_fill(dead, src)
-    h = np.where(dead, h, phi_obs)
+    h = W4.harmonic_fill(fill, src)
+    h = np.where(fill, h, phi_obs)
 
     border = bool(dead[0, :].any() or dead[-1, :].any() or dead[:, 0].any() or dead[:, -1].any()
                   or (cv2.dilate(dead.astype(np.uint8), np.ones((3, 3), np.uint8)) > 0)[~roi].any())
@@ -226,7 +332,7 @@ def process_shard(task):
     metas = [json.loads(m) for m in z["meta"]]
     N = len(metas)
     out = {k: [] for k in ("h", "M", "clean", "border", "carrier", "k", "flip", "sid",
-                           "iou", "iou_obs", "obs_p95", "h_p95", "h_miss", "tau")}
+                           "iou", "iou_obs", "obs_p95", "h_p95", "h_miss", "tau", "phi_obs", "dead_pred")}
     for i in range(N):
         I = I_all[i].astype(np.float64); phi = phi_all[i].astype(np.float64)
         roi = roi_all[i].astype(bool); dead = dead_all[i].astype(bool); orr = orr_all[i].astype(np.float64)
@@ -265,6 +371,7 @@ def process_shard(task):
         out["iou"].append(iou); out["iou_obs"].append(iou_obs)
         out["obs_p95"].append(float(np.percentile(np.abs(d), 95)))
         out["h_p95"].append(h_p95); out["h_miss"].append(miss); out["tau"].append(float(f["tau"]))
+        out["phi_obs"].append(np.asarray(po, np.float16)); out["dead_pred"].append(np.asarray(f["dead"], bool))
     arrs = {k: np.asarray(v) for k, v in out.items()}
     arrs["k"] = arrs["k"].astype(np.int16); arrs["flip"] = arrs["flip"].astype(np.int8)
     arrs["sid"] = arrs["sid"].astype(np.int32)
@@ -286,7 +393,15 @@ def main():
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--shards", type=int, default=0, help="limit shards per split for a smoke test")
     ap.add_argument("--seed", type=int, default=20261117)
+    ap.add_argument("--seg-ckpt", default="runs/w5_seg/best.pth")
+    ap.add_argument("--no-seg", action="store_true")
+    ap.add_argument("--seg-thr", type=float, default=0.5)
+    ap.add_argument("--seg-dilate", type=int, default=1)
     a = ap.parse_args()
+    global SEG_CFG
+    SEG_CFG.update(enabled=(not a.no_seg and os.path.exists(a.seg_ckpt)),
+                   ckpt=os.path.abspath(a.seg_ckpt), thr=a.seg_thr, dilate=a.seg_dilate)
+    print("seg cfg:", SEG_CFG, flush=True)
     os.makedirs(CACHE, exist_ok=True)
     tasks = []
     for split in a.splits.split(","):
@@ -298,9 +413,13 @@ def main():
     t0 = time.time()
     if a.workers <= 1:
         results = [process_shard(t) for t in tasks]
+    elif sys.platform != "win32":
+        # Linux training server: processes avoid the GIL; memory is large enough.
+        from concurrent.futures import ProcessPoolExecutor
+        with ProcessPoolExecutor(max_workers=a.workers) as ex:
+            results = list(ex.map(process_shard, tasks))
     else:
-        # ThreadPool, not ProcessPool: the DSH Windows sandbox blocks named pipes.
-        # numpy / OpenCV / FFT release the GIL, so this still gives a real speed-up.
+        # DSH Windows sandbox blocks process-pool named pipes; threads still work locally.
         from concurrent.futures import ThreadPoolExecutor
         with ThreadPoolExecutor(max_workers=a.workers) as ex:
             results = list(ex.map(process_shard, tasks))
@@ -329,3 +448,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
