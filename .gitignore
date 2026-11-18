@@ -56,3 +56,14 @@ desktop.ini
 # ---- office lock files & generated binaries ----
 ~$*
 *.docx
+
+# ---- large per-seed JSON/qual caches (kept locally, not in git) ----
+probes/results/w5_5seeds/*/baseline_*.json
+probes/results/w5_5seeds/*/rows_*.json
+probes/results/w5_5seeds/*/g5_all.json
+probes/results/w5_5seeds/*/qual/
+probes/results/w5_p0_final/baseline_*.json
+probes/results/w5_p0_final/rows_*.json
+probes/results/w5_p0_final/qual/
+probes/results/w5_eval_console.txt
+probes/results/w5_p0_eval_console.txt
