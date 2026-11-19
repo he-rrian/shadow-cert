@@ -1,0 +1,53 @@
+{
+ "ckpt": "runs/w5_p0_seed4/best_stage3.pth",
+ "cal": "val",
+ "test": "sf_test",
+ "n_cal": 1250,
+ "n_test": 610,
+ "grid": [
+  {
+   "alpha": 0.05,
+   "beta": 0.05,
+   "classes": {
+    "P": {
+     "n_cal": 551,
+     "tau": 4.931341999192398,
+     "n_test": 162,
+     "scene_success": 0.8271604938271605,
+     "mean_coverage": 0.9257800001633476,
+     "median_width": 0.49103410781319967
+    },
+    "U": {
+     "n_cal": 699,
+     "tau": 5.91555319473923,
+     "n_test": 448,
+     "scene_success": 0.7633928571428571,
+     "mean_coverage": 0.8990091037615013,
+     "median_width": 0.9117059513468543
+    },
+    "R": {
+     "n_cal": 0,
+     "tau": NaN,
+     "n_test": 0,
+     "scene_success": null,
+     "mean_coverage": null,
+     "median_width": null
+    }
+   },
+   "global_": {
+    "n_cal": 1250,
+    "tau": 5.379679128357434,
+    "scene_success": 0.7557377049180328,
+    "mean_coverage": 0.9023889096474719,
+    "median_width": 0.7409063040014034
+   },
+   "coverage_target": 0.95,
+   "pixel_baseline": {
+    "tau": 3.261509144326188,
+    "n_cal": 2027191,
+    "scene_success": 0.5377049180327869,
+    "mean_coverage": 0.8527972570026204
+   }
+  }
+ ]
+}

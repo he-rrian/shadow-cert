@@ -1,4 +1,4 @@
-﻿"""w8_conformal.py -- W8 two-level (scene-level) conformal calibration.
+"""w8_conformal.py -- W8 two-level (scene-level) conformal calibration.
 
 Calculates scene scores
     S_i = Quantile_{1-beta}( |psi-phi| / sigma  over GT-dead pixels )
@@ -32,10 +32,10 @@ def collate(batch):
 
 
 @torch.no_grad()
-def collect(ckpt, split, device="cuda"):
+def collect(ckpt, split, device="cuda", gamma=0.75):
     ck = torch.load(ckpt, map_location="cpu", weights_only=False)
     m = W5UNet(base=128).to(device); m.load_state_dict(ck["model"]); m.eval()
-    ds = W5Dataset(split, gamma=0.75, augment=False)
+    ds = W5Dataset(split, gamma=gamma, augment=False)
     ld = DataLoader(ds, batch_size=8, shuffle=False, num_workers=4, collate_fn=collate,
                     pin_memory=True, persistent_workers=True)
     scenes = []
@@ -122,10 +122,11 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--alphas", default="0.05,0.10,0.20")
     ap.add_argument("--betas", default="0.05,0.10,0.20")
+    ap.add_argument("--gamma", type=float, default=0.75)
     a = ap.parse_args()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"collect cal={a.cal} ...", flush=True); cal = collect(a.ckpt, a.cal, device)
-    print(f"collect test={a.test} ...", flush=True); test = collect(a.ckpt, a.test, device)
+    print(f"collect cal={a.cal} ...", flush=True); cal = collect(a.ckpt, a.cal, device, a.gamma)
+    print(f"collect test={a.test} ...", flush=True); test = collect(a.ckpt, a.test, device, a.gamma)
     res = dict(ckpt=a.ckpt, cal=a.cal, test=a.test, n_cal=len(cal), n_test=len(test), grid=[])
     for al in [float(x) for x in a.alphas.split(",")]:
         for be in [float(x) for x in a.betas.split(",")]:
@@ -145,4 +146,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
