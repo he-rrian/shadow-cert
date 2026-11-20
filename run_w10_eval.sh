@@ -14,9 +14,17 @@ for v in nophasor nofc hardsplit; do
   fi
   extra=""
   if [ "$v" = "nophasor" ]; then extra="--no-phasor"; fi
+  outdir="probes/results/w10_${v}_g5"
+  mkdir -p "$outdir"
+  # reuse the deterministic S5 baseline caches (same val/test/sf data)
+  for split in val test sf_test; do
+    src="probes/results/w5_5seeds/seed0/baseline_${split}.json"
+    [ -f "$src" ] || src="probes/results/w5_p0_final/baseline_${split}.json"
+    if [ -f "$src" ]; then cp "$src" "$outdir/"; fi
+  done
   echo "=== G8 point/fair: $v ==="
   "$PYTHON" code/w5_eval.py --ckpt "$ck" --splits val,test,sf_test \
-    --out "probes/results/w10_${v}_g5" $extra
+    --out "$outdir" $extra
   echo "=== G8 C3: $v ==="
   "$PYTHON" code/w8_conformal.py --ckpt "$ck" --cal val --test test \
     --alphas 0.05,0.10,0.20 --betas 0.05 \

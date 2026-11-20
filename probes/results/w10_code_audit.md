@@ -89,5 +89,8 @@ bash run_w10_eval.sh
 - [x] `w5_eval.py --no-phasor`、`w8_export_preds.py --no-phasor`、`w8_conformal.py --no-phasor`、`w8_rcps.py --no-phasor`
 - [x] `run_w10_ablations.sh`（100 epoch 30/30/40，与 S5 主表同配方）
 - [x] `run_w10_eval.sh` + `run_w10_waiter.sh`（训练完自动 G8）
-- [x] 服务器执行 3 项重训（运行中，no-phasor 先；~9 GPU·h）
-- [ ] G8 表 + 与主表同向结论
+- [x] 服务器执行 3 项重训（100 epoch，与 S5 主表同配方；~9 GPU·h）
+- [x] G8 表 + 与主表同向结论：`probes/results/w10_g8_report.md`
+  - 去 phasor **0.3766（+37.7%）** → 必要；
+  - 去 L_fc **0.2753（+0.7%）**，SF −11.9% → 弱/跨域；
+  - hard-split **0.2758（+0.9%）** → 无收益，主表混合足够。

@@ -5,9 +5,9 @@
 
 > 规则：题目 2 的所有产物只放本目录；题目 3 的东西不要放进来。临时文件随手删。
 
-## 当前进度（2026-11-20 19:30）
+## 当前进度（2026-11-21 05:00）
 
-S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公平档 5/5）** → **S6/W8 ✅（A 口径：G6 OOD 未达 / C4 abstain 降级附录）** → **S7/W9 零重训消融 ✅（6/6，本地 CPU）** → **S7 GT audit v2 ✅（N_eff=6，G7 insufficient）** → **W10 代码就绪（3 项，等 GPU 服务器）** → S8 ⬜
+S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公平档 5/5）** → **S6/W8 ✅（A 口径：G6 OOD 未达 / C4 abstain 降级附录）** → **S7 ✅（W9 6/6 + GT audit v2 + 真实 refusal 11/11 + G7 insufficient + W10 G8）** → S8 ⬜
 
 ### S5（已完成）
 - 数据：train 12,000 / val 1,500 / test 1,500（12.84 GB），SHA256 全绿；前端缓存 24 shard。
@@ -41,11 +41,14 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
 - **真实 C1 gate（`w9_real_c1.py`，CPU，无模型）：refusal correctness 11/11，n_P=0**（**不要写“接受率 0%”**）。真实遮挡 `vinf` 88–654（合成 P 小内孔 ~10–20），`rho` 2.5–44；GT-badmask 诊断 6/6 仍 U，GT/紧 ROI 诊断 11/11 仍 U（最小 rho 2.32）。**G7 的 binding 约束变成 `n_P≥5`，不是 N_eff**；即使 GT audit 全过也 insufficient。真实只做定性/点误差；这是 Theorem 6 在真实数据上的体现。
 - re-audit 预注册（相位 + mask 双门槛）：见 `w9_gt_audit_findings.md` §3；报告：`probes/results/w9_real_c1.md`。
 
-### W10（需重训消融，已在服务器训练）
+### W10（需重训消融，✅ G8 完成）
 - **只做 3 项**（用户 2026-11-20 决定）：去 phasor（7→3 通道：I/roi/M）、去 L_fc（权重 0）、hard-split 1:1 上采样 vs 主表纯混合。
-- 代码：`w5_train.py --no-phasor / --no-fc / --hard-split --hard-ratio 0.5`；`w5_model.make_input(use_phasor=False)` + `W5UNet(cin=3)`；`run_w10_ablations.sh`；评测端已加 `--no-phasor`（`w5_eval.py`、`w8_export_preds.py`、`w8_conformal.py`、`w8_rcps.py`）。
-- 审计：`probes/results/w10_code_audit.md`；`log T̂` 当前模型没有这个头，**不硬映射**；尺度增广 S5 配方本就没有，**not applicable**。
-- **100 epoch（30/30/40），与 S5 主表同配方；1 seed（seed 0）；~9 GPU·h**；已在 AutoDL 5090 顺序训练（no-phasor 先）。G8 与 5-seed 主表同向。
+- 配方：seed 0，**100 epoch（30/30/40）**，与 S5 主表完全同配方；~9 GPU·h；服务器顺序训练完成。
+- **G8 结果**（公平档 = `gate_val.ours / gate_val.bih_sf`，主表 5-seed **0.2734 ± 0.0130**）：
+  - **去 phasor 0.3766（+37.7%）**，三形状全差，best val 0.668 vs 0.521 → **phasor 必要**；
+  - **去 L_fc 0.2753（+0.7%）**，best val 0.5198 ≈ 0.5205，但 **SF 掉点 −3.4%→−11.9%** → **L_fc 主要保跨域/边缘，in-distribution 弱**（诚实 null/weak，不写“显著变差”）；
+  - **hard-split 0.2758（+0.9%）**，C3 覆盖低 3 pt、C4 略差、best val 略差 → **主表纯混合采样足够**（反转项，方向已写死）。
+- 报告：`probes/results/w10_g8_report.md`；代码审计：`w10_code_audit.md`；`log T̂` 不硬映射；尺度增广 not applicable。
 
 ### 背景（S4/SF，历史）
 - W4 主口径（γ*=0.75，5% 风险）：val 认证 25.7% / test 25.2%，CP95 3.23% / 4.05%；严格 γ=1 0/109。
@@ -54,11 +57,11 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
 - 大白话版：`doc/给非专业读者的项目说明.md`（2026-11-20 更新到 S6 A 口径 + W9 + GT audit）。
 
 ### 下一步
-1. S6 收口已完成（A 口径）；交接 `doc/交接_S6到S7_2026-11-20.md`。
-2. **S7/W9 零重训 6 项 + 真实 11 场景 GT audit v2 已完成**（2026-11-20）；**N_eff=6 → G7 insufficient**。下一步不是“硬算 G7”，而是：修 scene_02/03/06 的 badmask/相位并 re-audit（相位+mask 双门槛已预注册）；真实推理仍需 GPU，服务器等用户通知。
-3. **W10 只做 3 项**（用户 2026-11-20 决定）：去 phasor（7→3 通道）、去 L_fc、hard-split 1:1 上采样 vs 主表纯混合。`log T̂` 更名/待 code audit；尺度增广按“S5 训练配方本就没有”作废，不硬映射。
-4. G7 口径：**empirical acceptance rule，不是 C4 证书**；`handled ≥ ceil(8·N_eff/11)`、`n_P ≥ 5`、`P_pass ≥ ceil(0.8·n_P)`、`N_eff < 10 → insufficient`；P 空接受集 = abstain ≠ pass。
-5. 文档同步：标题 “Certified Recoverability and Distribution-Free Intervals...”；C4 只作附录 negative。
+1. **S7 已收口**（2026-11-21）；当前交接 `doc/交接_S7到S8_2026-11-21.md`。S6 交接 `doc/交接_S6到S7_2026-11-20.md` 只作历史。
+2. **S8 写作**：主表 C1/C2/C3；C4 附录；真实部分写 **refusal correctness 11/11 + G7 insufficient**；W9/W10 消融表；标题用 “Certified Recoverability and Distribution-Free Intervals...”。
+3. **S8 第一件 GPU 任务**：真实 6 个 GT 可用场景（scene_01/04/05、Train、实测2、实验4）的定性 + 点误差表；不挂门禁，只作描述性。
+4. G7 已按 insufficient 收口（n_P=0）；不再尝试“把真实调成 P”，除非采集新的小孔遮挡数据。
+5. C4 只作附录 negative；pooled 70.6% 不是 P 接受率；C3 主表只写 P-only 0.9344/0.8857/0.7841。
 
 
 
@@ -70,9 +73,10 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
   doc\
     给非专业读者的项目说明.md        ★ 大白话版：每一步在做什么、为什么
     W4_基线与校准报告.md              ★★★ S4 主报告（基线表 + 风险曲线 + 门禁）
-    交接_S6到S7_2026-11-20.md          ★★★ 当前交接：S6 收口（A 口径）+ S7/W9 入口
-    交接_S5到S6_2026-11-20.md          ★★ S5→S6 历史交接
-    交接_S4到S5_2026-11-17.md          ★ S4→S5 历史交接
+    交接_S7到S8_2026-11-21.md          ★★★ 当前交接：S7 收口（W9/GT audit/真实 refusal/G7 insufficient/W10 G8）
+    交接_S6到S7_2026-11-20.md          ★★ S6→S7 历史交接
+    交接_S5到S6_2026-11-20.md          ★ S5→S6 历史交接
+    交接_S4到S5_2026-11-17.md          S4→S5 历史交接
     启动S4_新会话开局包.md            ★ S4 开局包（S4 已完成，留作历史）
     阶段划分与交接规范.md             ★★ 阶段 S0-S8 + 出口门禁 + 交接文件规范
     交接_S3到S4_2026-11-16.md         S3 交接（历史）
@@ -93,12 +97,17 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
     w1_verify.py         V6 可达性 / V7 闭式界 / V7b 收敛 / V8 κ̂ 校准
     make_fig.py          八面板图
     results\
-      w9_zero_retrain.md          ★ W9 六项消融报告（当前）
-      w9_zero_retrain_all.json    W9 汇总 JSON
+      w9_zero_retrain.md          ★ W9 六项消融报告
+      w9_gt_audit_findings.md     ★ GT audit v2 + 锁定口径
+      w9_real_c1.md               ★ 真实 refusal correctness 11/11
+      w10_g8_report.md            ★ W10 G8 三项对照
       w8_s6_main_table.md         S6 C1–C4 主表
   code\                  生成器 / 基线 / 校准 / SF 导出与校验（w3_gen.py, w4_calibrate.py, w4_decide.py, w4_sf_recal.py, w3_gt_blocks.py, w3_export_sf.py, verify_w3.py, verify_sf.py）
     w9_zero_retrain.py    W9 第 1–5 项（torch-free，compact）
     w9_roi.py             W9 第 6 项（单帧 ROI 估计 + 代价）
+    w9_gt_audit.py        GT audit（Tier A/B + 预注册 re-audit）
+    w9_real_c1.py         真实 C1 refusal gate（CPU，无模型）
+    w5_train.py           W10 flags：--no-phasor / --no-fc / --hard-split
     w8_conformal.py / w8_rcps.py   已改 torch-lazy，CPU 可导入校准数学
   data\                  train/val/test 分片 + manifest（SHA256 冻结，12.84 GB）；sf_val/sf_test 各 690（450 vinf + 240 误差评测）
 ```
