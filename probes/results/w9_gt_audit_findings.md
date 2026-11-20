@@ -73,7 +73,8 @@ N_eff = 6
 ## 4. 当前状态与下一步
 
 - **W9 六项零重训**：✅ 完成；官方 C3 float32 主表未动。
-- **GT audit v2**：✅ 完成；N_eff=6，G7 insufficient。
-- **G7**：⏸ 等 scene_02/03/06 的 badmask/相位修复与 re-audit；若其中被 C1 判 U，可回到 N_eff 并计 handled；判 P 且 GT 不可评 → 单列 `P-class, GT-insufficient`。
-- **W10**：3 项可继续（去 phasor 7→3、去 L_fc、hard-split 1:1 上采样 vs 主表纯混合）；`log T̂` 不硬映射，等 code audit；尺度增广按“S5 配方本就没有”作废。
-- **服务器**：真实推理仍需 GPU；等用户通知后开。G7 暂时 insufficient，不阻塞 W10 代码准备。
+- **GT audit v2**：✅ 完成；按 GT 分母 N_eff=6。
+- **真实 C1（2026-11-20，CPU，`w9_real_c1.py`）**：**11/11 全部 U，n_P=0**。真实遮挡的 `vinf` 在 88–654 量级（合成 P 小内孔只有 ~10–20），`rho` 2.5–44；GT-badmask 诊断 6/6 仍 U。**G7 的 binding 约束变成 `n_P≥5`，不是 N_eff**；即使 GT audit 全过，G7 也 insufficient。
+- **G7**：⏸ **insufficient（n_P=0）**；不需要跑网络来算像素失败率。真实场景只做定性/点误差；不改 γ 去把真实变 P（test tuning）。
+- **W10**：3 项已上服务器训练（no-phasor 先跑）；`log T̂` 不硬映射；尺度增广 not applicable。
+- **服务器**：已开机；W10 三项顺序训练中。

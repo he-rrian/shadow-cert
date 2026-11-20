@@ -38,7 +38,8 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
 - **1 Tier A FAIL**：实测1（mat 偏差+平面 median 0.116 / P95 0.506 vs 0.1/0.3）→ 只作定性，不进 G7 像素统计；不降 Tier B、不放宽阈值。
 - **1 Tier B FAIL**：实验3（4 步模型残差 0.132 > 0.10）。
 - **N_eff = 11 − 4 − 1 = 6 < 10 → G7 = insufficient**（不是 fail/pass）；“P 但 GT 不可评”单列 `P-class, GT-insufficient`，不进 P_pass 分子/分母。
-- re-audit 预注册（相位 + mask 双门槛）：见 `w9_gt_audit_findings.md` §3。
+- **真实 C1 gate（`w9_real_c1.py`，CPU，无模型）：11/11 U，n_P=0**。真实遮挡 `vinf` 88–654（合成 P 小内孔 ~10–20），`rho` 2.5–44；GT-badmask 诊断 6/6 仍 U。**G7 的 binding 约束变成 `n_P≥5`，不是 N_eff**；即使 GT audit 全过也 insufficient。真实只做定性/点误差。
+- re-audit 预注册（相位 + mask 双门槛）：见 `w9_gt_audit_findings.md` §3；报告：`probes/results/w9_real_c1.md`。
 
 ### W10（需重训消融，代码就绪；等 GPU 服务器）
 - **只做 3 项**（用户 2026-11-20 决定）：去 phasor（7→3 通道：I/roi/M）、去 L_fc（权重 0）、hard-split 1:1 上采样 vs 主表纯混合。

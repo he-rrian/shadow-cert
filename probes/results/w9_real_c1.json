@@ -1,0 +1,228 @@
+{
+ "date": "2026-11-20",
+ "gamma": 0.75,
+ "delta_g": 0.13,
+ "phi_tol": 0.3141592653589793,
+ "scenes": [
+  {
+   "scene": "scene_01",
+   "file": "single_shot.png",
+   "shape": [
+    256,
+    256
+   ],
+   "roi_frac": 0.9911956787109375,
+   "roi_fallback": true,
+   "roi_empty": false,
+   "c1": "U",
+   "reason": "border_dead",
+   "rho": 24.47157990819401,
+   "vinf": 563.9844641389273,
+   "kappa": 0.0178680419921875,
+   "n_collar": 3581,
+   "dead_frac": 0.198638916015625,
+   "roi_frac_used": 0.9911956787109375,
+   "border": true
+  },
+  {
+   "scene": "scene_02",
+   "file": "single_shot.png",
+   "shape": [
+    256,
+    256
+   ],
+   "roi_frac": 1.0,
+   "roi_fallback": true,
+   "roi_empty": false,
+   "c1": "U",
+   "reason": "border_dead",
+   "rho": 44.20740813304265,
+   "vinf": 608.2119596118849,
+   "kappa": 0.030160903930664062,
+   "n_collar": 6416,
+   "dead_frac": 0.3228302001953125,
+   "roi_frac_used": 1.0,
+   "border": true
+  },
+  {
+   "scene": "scene_03",
+   "file": "single_shot.png",
+   "shape": [
+    256,
+    256
+   ],
+   "roi_frac": 1.0,
+   "roi_fallback": true,
+   "roi_empty": false,
+   "c1": "U",
+   "reason": "border_dead",
+   "rho": 33.4901312923953,
+   "vinf": 628.808845629751,
+   "kappa": 0.02203369140625,
+   "n_collar": 6402,
+   "dead_frac": 0.3607025146484375,
+   "roi_frac_used": 1.0,
+   "border": true
+  },
+  {
+   "scene": "scene_04",
+   "file": "single_shot.png",
+   "shape": [
+    256,
+    256
+   ],
+   "roi_frac": 1.0,
+   "roi_fallback": true,
+   "roi_empty": false,
+   "c1": "U",
+   "reason": "border_dead",
+   "rho": 16.124260708631812,
+   "vinf": 581.6292334563639,
+   "kappa": 0.01131439208984375,
+   "n_collar": 4563,
+   "dead_frac": 0.2763824462890625,
+   "roi_frac_used": 1.0,
+   "border": true
+  },
+  {
+   "scene": "scene_05",
+   "file": "single_shot.png",
+   "shape": [
+    256,
+    256
+   ],
+   "roi_frac": 1.0,
+   "roi_fallback": true,
+   "roi_empty": false,
+   "c1": "U",
+   "reason": "border_dead",
+   "rho": 26.19511674085166,
+   "vinf": 654.1032780539604,
+   "kappa": 0.016510009765625,
+   "n_collar": 2005,
+   "dead_frac": 0.163543701171875,
+   "roi_frac_used": 1.0,
+   "border": true
+  },
+  {
+   "scene": "scene_06",
+   "file": "single_shot.png",
+   "shape": [
+    256,
+    256
+   ],
+   "roi_frac": 1.0,
+   "roi_fallback": true,
+   "roi_empty": false,
+   "c1": "U",
+   "reason": "border_dead",
+   "rho": 24.391529083929015,
+   "vinf": 487.57650359821025,
+   "kappa": 0.020599365234375,
+   "n_collar": 1171,
+   "dead_frac": 0.100494384765625,
+   "roi_frac_used": 1.0,
+   "border": true
+  },
+  {
+   "scene": "Train",
+   "file": "input00.png",
+   "shape": [
+    480,
+    640
+   ],
+   "roi_frac": 0.23663736979166666,
+   "roi_fallback": false,
+   "roi_empty": false,
+   "c1": "U",
+   "reason": "rho>1",
+   "rho": 1.3978473733401178,
+   "vinf": 28.242186285136157,
+   "kappa": 0.01459503173828125,
+   "n_collar": 2911,
+   "dead_frac": 0.005660807291666667,
+   "roi_frac_used": 0.23663736979166666,
+   "border": false
+  },
+  {
+   "scene": "实测1",
+   "file": "fpp_shice_1_1.bmp",
+   "shape": [
+    700,
+    700
+   ],
+   "roi_frac": 0.9966326530612245,
+   "roi_fallback": true,
+   "roi_empty": false,
+   "c1": "U",
+   "reason": "border_dead",
+   "rho": 5.836890668983425,
+   "vinf": 328.09418935881405,
+   "kappa": 0.006923675537109375,
+   "n_collar": 12187,
+   "dead_frac": 0.11259591836734693,
+   "roi_frac_used": 0.9966326530612245,
+   "border": true
+  },
+  {
+   "scene": "实测2",
+   "file": "fpp_shice_2_1.bmp",
+   "shape": [
+    595,
+    595
+   ],
+   "roi_frac": 1.0,
+   "roi_fallback": true,
+   "roi_empty": false,
+   "c1": "U",
+   "reason": "border_dead",
+   "rho": 2.9759649346064228,
+   "vinf": 370.1873199482151,
+   "kappa": 0.002899169921875,
+   "n_collar": 97181,
+   "dead_frac": 0.45382670715344964,
+   "roi_frac_used": 1.0,
+   "border": true
+  },
+  {
+   "scene": "实验3",
+   "file": "cropped_fpp_shice_3_1.jpg",
+   "shape": [
+    667,
+    640
+   ],
+   "roi_frac": 0.9992667728635682,
+   "roi_fallback": true,
+   "roi_empty": false,
+   "c1": "U",
+   "reason": "border_dead",
+   "rho": 3.3175873898008237,
+   "vinf": 92.04814403749322,
+   "kappa": 0.013214111328125,
+   "n_collar": 8521,
+   "dead_frac": 0.052326180659670166,
+   "roi_frac_used": 0.9992667728635682,
+   "border": true
+  },
+  {
+   "scene": "实验4",
+   "file": "cropped_fpp_shice_3_1.jpg",
+   "shape": [
+    497,
+    530
+   ],
+   "roi_frac": 0.9895258342507878,
+   "roi_fallback": true,
+   "roi_empty": false,
+   "c1": "U",
+   "reason": "border_dead",
+   "rho": 2.488265647137123,
+   "vinf": 88.73772959835294,
+   "kappa": 0.009792327880859375,
+   "n_collar": 14241,
+   "dead_frac": 0.10466952659352341,
+   "roi_frac_used": 0.9895258342507878,
+   "border": true
+  }
+ ]
+}
