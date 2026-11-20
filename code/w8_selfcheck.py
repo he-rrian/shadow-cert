@@ -21,11 +21,14 @@ def main():
     ap.add_argument("--reps", type=int, default=20)
     ap.add_argument("--alphas", default="0.05,0.10,0.20")
     ap.add_argument("--betas", default="0.05")
+    ap.add_argument("--p-only", action="store_true", help="only P-class scenes (certificate-first C3)")
     a = ap.parse_args()
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     scenes = collect(a.ckpt, a.split, dev)
+    if a.p_only:
+        scenes = [s for s in scenes if s["y"] == 0]
     rng = np.random.default_rng(20261119)
-    out = dict(ckpt=a.ckpt, split=a.split, n=len(scenes), reps=a.reps, rows=[])
+    out = dict(ckpt=a.ckpt, split=a.split, n=len(scenes), reps=a.reps, p_only=bool(a.p_only), rows=[])
     for al in [float(x) for x in a.alphas.split(",")]:
         for be in [float(x) for x in a.betas.split(",")]:
             vals = []
@@ -47,3 +50,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
