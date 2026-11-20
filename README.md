@@ -41,11 +41,11 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
 - **真实 C1 gate（`w9_real_c1.py`，CPU，无模型）：11/11 U，n_P=0**。真实遮挡 `vinf` 88–654（合成 P 小内孔 ~10–20），`rho` 2.5–44；GT-badmask 诊断 6/6 仍 U，GT/紧 ROI 诊断 11/11 仍 U（最小 rho 2.32）。**G7 的 binding 约束变成 `n_P≥5`，不是 N_eff**；即使 GT audit 全过也 insufficient。真实只做定性/点误差。
 - re-audit 预注册（相位 + mask 双门槛）：见 `w9_gt_audit_findings.md` §3；报告：`probes/results/w9_real_c1.md`。
 
-### W10（需重训消融，代码就绪；等 GPU 服务器）
+### W10（需重训消融，已在服务器训练）
 - **只做 3 项**（用户 2026-11-20 决定）：去 phasor（7→3 通道：I/roi/M）、去 L_fc（权重 0）、hard-split 1:1 上采样 vs 主表纯混合。
 - 代码：`w5_train.py --no-phasor / --no-fc / --hard-split --hard-ratio 0.5`；`w5_model.make_input(use_phasor=False)` + `W5UNet(cin=3)`；`run_w10_ablations.sh`；评测端已加 `--no-phasor`（`w5_eval.py`、`w8_export_preds.py`、`w8_conformal.py`、`w8_rcps.py`）。
 - 审计：`probes/results/w10_code_audit.md`；`log T̂` 当前模型没有这个头，**不硬映射**；尺度增广 S5 配方本就没有，**not applicable**。
-- 预计 ~36 GPU·h（3 × 12），1 seed（seed 0）；G8 与 5-seed 主表同向。
+- **100 epoch（30/30/40），与 S5 主表同配方；1 seed（seed 0）；~9 GPU·h**；已在 AutoDL 5090 顺序训练（no-phasor 先）。G8 与 5-seed 主表同向。
 
 ### 背景（S4/SF，历史）
 - W4 主口径（γ*=0.75，5% 风险）：val 认证 25.7% / test 25.2%，CP95 3.23% / 4.05%；严格 γ=1 0/109。

@@ -1,6 +1,6 @@
 # W10 需重训消融 — code audit 与可执行定义
 
-**日期**：2026-11-20 ｜ **状态**：3 项代码已就绪（本地 CPU 编译通过）；**等 GPU 服务器执行**
+**日期**：2026-11-20 ｜ **状态**：3 项代码已就绪；**已在服务器执行（no-phasor 先跑，100 epoch 配方）**
 
 **用户 2026-11-20 决定**：W10 只做 **3 项**；`log T̂` 不硬映射（等 code audit）；尺度增广按“S5 训练配方本就没有”**作废**。
 
@@ -50,8 +50,8 @@ python code/w5_train.py --seed 0 --out runs/w10_nofc_seed0       --no-fc
 python code/w5_train.py --seed 0 --out runs/w10_hardsplit_seed0  --hard-split --hard-ratio 0.5
 ```
 
-- 每项 130 epoch（35/35/40），batch 16，与 S5 主表同配方；1 seed（seed 0）。
-- 预计 **~36 GPU·h**（3 × 12 GPU·h；用户原估 5 项 ~60 GPU·h）。
+- 每项 100 epoch（30/30/40），batch 16，与 S5 主表同配方；1 seed（seed 0）。
+- 预计 **~9 GPU·h**（5090 实测约 3 h/项；原 36 GPU·h 估计基于 130 epoch/5 项）。
 - 输出：`runs/w10_*_seed0/best_stage3.pth`、`train_log.json`。
 
 ---
