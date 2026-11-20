@@ -1,0 +1,674 @@
+{
+ "date": "2026-11-20",
+ "thresholds": {
+  "valid_frac_min": 0.1,
+  "wrap_p95_max": 0.05,
+  "model_resid_med_max": 0.1,
+  "first5_rms_max": 0.05,
+  "dir_sign_match": true,
+  "unwrap_jump_frac_max": 0.005,
+  "cross_med_max": 0.05,
+  "cross_p95_max": 0.2,
+  "cross_med_max_tierA_real": 0.1,
+  "cross_p95_max_tierA_real": 0.3
+ },
+ "scenes": [
+  {
+   "scene": "scene_01",
+   "tier": "A",
+   "path": "F:\\paper\\2\\model\\real\\captures\\proc\\scene_01",
+   "kind": "4step_proc",
+   "gt": "gt_phase.npy",
+   "shape": [
+    256,
+    256
+   ],
+   "n_frames": 4,
+   "files": [
+    "capture_1.png",
+    "capture_2.png",
+    "capture_3.png",
+    "capture_4.png"
+   ],
+   "valid_frac": 0.9603271484375,
+   "unit": "rad",
+   "unwrapped": true,
+   "range": [
+    -89.57977294921875,
+    79.92059326171875
+   ],
+   "wrap_p95": 2.6941299438476562e-05,
+   "jump_frac": 0.0006404560046753289,
+   "model_resid_med": 0.10435395941229778,
+   "first5": null,
+   "carrier_fx": -0.1015625,
+   "median_dphi_dx": 0.6410808563232422,
+   "direction_ok": false,
+   "cross": {
+    "ref": "gt_phase.npy",
+    "sign": 1,
+    "k": -163,
+    "offset": 1036.7255859375,
+    "median": 0.001953125,
+    "p95": 0.0062255859375,
+    "max": 12.577880859375,
+    "mean": 0.005492040887475014,
+    "model": "offset"
+   },
+   "cross_alt": {
+    "ref": "gt_phase.npy",
+    "sign": 1,
+    "a": 12.566559271306689,
+    "bx": 1.8505364354893822e-06,
+    "by": -1.283254392952625e-05,
+    "median": 0.0023215399503246914,
+    "p95": 0.006828984083868672,
+    "max": 12.576779236177845,
+    "mean": 0.0058178765688991,
+    "model": "deviation+plane"
+   },
+   "gt_convention": "total+offset",
+   "pass": true,
+   "gate": {
+    "cross_med_max": 0.05,
+    "cross_p95_max": 0.2,
+    "wrap_p95_max": 0.05,
+    "valid_frac_min": 0.1,
+    "ok_cross": true,
+    "ok_misc": true
+   }
+  },
+  {
+   "scene": "scene_02",
+   "tier": "A",
+   "path": "F:\\paper\\2\\model\\real\\captures\\proc\\scene_02",
+   "kind": "4step_proc",
+   "gt": "gt_phase.npy",
+   "shape": [
+    256,
+    256
+   ],
+   "n_frames": 4,
+   "files": [
+    "capture_1.png",
+    "capture_2.png",
+    "capture_3.png",
+    "capture_4.png"
+   ],
+   "valid_frac": 0.9213409423828125,
+   "unit": "rad",
+   "unwrapped": true,
+   "range": [
+    -178.1435089111328,
+    38.88302993774414
+   ],
+   "wrap_p95": 6.985664367675781e-05,
+   "jump_frac": 0.014768249515795098,
+   "model_resid_med": 0.269523020724364,
+   "first5": null,
+   "carrier_fx": 0.125,
+   "median_dphi_dx": -0.7438907623291016,
+   "direction_ok": false,
+   "cross": {
+    "ref": "gt_phase.npy",
+    "sign": 1,
+    "k": -163,
+    "offset": 992.7471923828125,
+    "median": 0.0103759765625,
+    "p95": 12.5650634765625,
+    "max": 163.3756103515625,
+    "mean": 4.7214531898498535,
+    "model": "offset"
+   },
+   "cross_alt": {
+    "ref": "gt_phase.npy",
+    "sign": 1,
+    "a": -22.95564869363424,
+    "bx": -0.04829266423665049,
+    "by": -0.011045250510001837,
+    "median": 1.7259087880513562,
+    "p95": 16.95264125113067,
+    "max": 159.9036608961631,
+    "mean": 4.454515047429855,
+    "model": "deviation+plane"
+   },
+   "gt_convention": "total+offset",
+   "pass": false,
+   "gate": {
+    "cross_med_max": 0.05,
+    "cross_p95_max": 0.2,
+    "wrap_p95_max": 0.05,
+    "valid_frac_min": 0.1,
+    "ok_cross": false,
+    "ok_misc": true
+   }
+  },
+  {
+   "scene": "scene_03",
+   "tier": "A",
+   "path": "F:\\paper\\2\\model\\real\\captures\\proc\\scene_03",
+   "kind": "4step_proc",
+   "gt": "gt_phase.npy",
+   "shape": [
+    256,
+    256
+   ],
+   "n_frames": 4,
+   "files": [
+    "capture_1.png",
+    "capture_2.png",
+    "capture_3.png",
+    "capture_4.png"
+   ],
+   "valid_frac": 0.9155120849609375,
+   "unit": "rad",
+   "unwrapped": true,
+   "range": [
+    -157.4935302734375,
+    10.887876510620117
+   ],
+   "wrap_p95": 6.318092346191406e-05,
+   "jump_frac": 0.008003560870733674,
+   "model_resid_med": 0.09115530700757925,
+   "first5": null,
+   "carrier_fx": 0.1015625,
+   "median_dphi_dx": 0.6114156246185303,
+   "direction_ok": true,
+   "cross": {
+    "ref": "gt_phase.npy",
+    "sign": 1,
+    "k": -163,
+    "offset": 1068.1478271484375,
+    "median": 0.01318359375,
+    "p95": 12.5538330078125,
+    "max": 31.4202880859375,
+    "mean": 3.4629640579223633,
+    "model": "offset"
+   },
+   "cross_alt": {
+    "ref": "gt_phase.npy",
+    "sign": 1,
+    "a": 49.59816796406237,
+    "bx": 0.009480571739092381,
+    "by": -0.02587109332780986,
+    "median": 2.2952454672796208,
+    "p95": 6.589784652418365,
+    "max": 27.09451914475124,
+    "mean": 2.7332026359762915,
+    "model": "deviation+plane"
+   },
+   "gt_convention": "total+offset",
+   "pass": false,
+   "gate": {
+    "cross_med_max": 0.05,
+    "cross_p95_max": 0.2,
+    "wrap_p95_max": 0.05,
+    "valid_frac_min": 0.1,
+    "ok_cross": false,
+    "ok_misc": true
+   }
+  },
+  {
+   "scene": "scene_04",
+   "tier": "A",
+   "path": "F:\\paper\\2\\model\\real\\captures\\proc\\scene_04",
+   "kind": "4step_proc",
+   "gt": "gt_phase.npy",
+   "shape": [
+    256,
+    256
+   ],
+   "n_frames": 4,
+   "files": [
+    "capture_1.png",
+    "capture_2.png",
+    "capture_3.png",
+    "capture_4.png"
+   ],
+   "valid_frac": 0.9302215576171875,
+   "unit": "rad",
+   "unwrapped": true,
+   "range": [
+    -92.30645751953125,
+    84.68112182617188
+   ],
+   "wrap_p95": 4.506111145019531e-05,
+   "jump_frac": 0.0033989695581339574,
+   "model_resid_med": 0.1659756158989826,
+   "first5": null,
+   "carrier_fx": 0.1015625,
+   "median_dphi_dx": 0.530759334564209,
+   "direction_ok": true,
+   "cross": {
+    "ref": "gt_phase.npy",
+    "sign": 1,
+    "k": -163,
+    "offset": 1099.5574951171875,
+    "median": 0.001953125,
+    "p95": 0.0184326171875,
+    "max": 43.9776611328125,
+    "mean": 0.30415403842926025,
+    "model": "offset"
+   },
+   "cross_alt": {
+    "ref": "gt_phase.npy",
+    "sign": 1,
+    "a": 75.32222739127316,
+    "bx": -0.0009932498899595688,
+    "by": 0.0037524477283175798,
+    "median": 0.290833997536339,
+    "p95": 0.8408834218283544,
+    "max": 44.09803632639971,
+    "mean": 0.5798978416938746,
+    "model": "deviation+plane"
+   },
+   "gt_convention": "total+offset",
+   "pass": true,
+   "gate": {
+    "cross_med_max": 0.05,
+    "cross_p95_max": 0.2,
+    "wrap_p95_max": 0.05,
+    "valid_frac_min": 0.1,
+    "ok_cross": true,
+    "ok_misc": true
+   }
+  },
+  {
+   "scene": "scene_05",
+   "tier": "A",
+   "path": "F:\\paper\\2\\model\\real\\captures\\proc\\scene_05",
+   "kind": "4step_proc",
+   "gt": "gt_phase.npy",
+   "shape": [
+    256,
+    256
+   ],
+   "n_frames": 4,
+   "files": [
+    "capture_1.png",
+    "capture_2.png",
+    "capture_3.png",
+    "capture_4.png"
+   ],
+   "valid_frac": 0.999786376953125,
+   "unit": "rad",
+   "unwrapped": true,
+   "range": [
+    -99.2641830444336,
+    98.9971923828125
+   ],
+   "wrap_p95": 3.504753112792969e-05,
+   "jump_frac": 0.0033713116701018287,
+   "model_resid_med": 0.10887657617524502,
+   "first5": null,
+   "carrier_fx": -0.12109375,
+   "median_dphi_dx": 0.7526626586914062,
+   "direction_ok": false,
+   "cross": {
+    "ref": "gt_phase.npy",
+    "sign": 1,
+    "k": -163,
+    "offset": 1074.4249267578125,
+    "median": 0.0062255859375,
+    "p95": 0.0211181640625,
+    "max": 25.14697265625,
+    "mean": 0.35270458459854126,
+    "model": "offset"
+   },
+   "cross_alt": {
+    "ref": "gt_phase.npy",
+    "sign": 1,
+    "a": 49.53582815944925,
+    "bx": 0.0019399175312718765,
+    "by": 0.006046907417645153,
+    "median": 0.4006236543377142,
+    "p95": 1.124464207879088,
+    "max": 26.050603344057848,
+    "mean": 0.7406629809862696,
+    "model": "deviation+plane"
+   },
+   "gt_convention": "total+offset",
+   "pass": true,
+   "gate": {
+    "cross_med_max": 0.05,
+    "cross_p95_max": 0.2,
+    "wrap_p95_max": 0.05,
+    "valid_frac_min": 0.1,
+    "ok_cross": true,
+    "ok_misc": true
+   }
+  },
+  {
+   "scene": "scene_06",
+   "tier": "A",
+   "path": "F:\\paper\\2\\model\\real\\captures\\proc\\scene_06",
+   "kind": "4step_proc",
+   "gt": "gt_phase.npy",
+   "shape": [
+    256,
+    256
+   ],
+   "n_frames": 4,
+   "files": [
+    "capture_1.png",
+    "capture_2.png",
+    "capture_3.png",
+    "capture_4.png"
+   ],
+   "valid_frac": 0.999969482421875,
+   "unit": "rad",
+   "unwrapped": true,
+   "range": [
+    -49.55690002441406,
+    143.55709838867188
+   ],
+   "wrap_p95": 5.412101745605469e-05,
+   "jump_frac": 0.002949016483853177,
+   "model_resid_med": 0.13772194200711474,
+   "first5": null,
+   "carrier_fx": 0.12109375,
+   "median_dphi_dx": -0.7202386856079102,
+   "direction_ok": false,
+   "cross": {
+    "ref": "gt_phase.npy",
+    "sign": 1,
+    "k": -163,
+    "offset": 879.6505126953125,
+    "median": 0.00927734375,
+    "p95": 6.2830810546875,
+    "max": 12.5653076171875,
+    "mean": 2.639371395111084,
+    "model": "offset"
+   },
+   "cross_alt": {
+    "ref": "gt_phase.npy",
+    "sign": 1,
+    "a": -137.35951750030614,
+    "bx": -0.03587617940445956,
+    "by": 0.0004208866197743072,
+    "median": 1.2174337098969374,
+    "p95": 2.9264976234368723,
+    "max": 9.306298454255057,
+    "mean": 1.340857320640104,
+    "model": "deviation+plane"
+   },
+   "gt_convention": "total+offset",
+   "pass": false,
+   "gate": {
+    "cross_med_max": 0.05,
+    "cross_p95_max": 0.2,
+    "wrap_p95_max": 0.05,
+    "valid_frac_min": 0.1,
+    "ok_cross": false,
+    "ok_misc": true
+   }
+  },
+  {
+   "scene": "Train",
+   "tier": "A",
+   "path": "F:\\paper\\1\\phase\\Train",
+   "kind": "15step",
+   "gt": "gt15_rad.npy",
+   "shape": [
+    480,
+    640
+   ],
+   "n_frames": 15,
+   "files": [
+    "00.bmp..14.bmp"
+   ],
+   "valid_frac": 0.391396484375,
+   "unit": "rad",
+   "unwrapped": true,
+   "range": [
+    -164.9482421875,
+    196.25743103027344
+   ],
+   "wrap_p95": 6.175041198730469e-05,
+   "jump_frac": 0.00019271051529116045,
+   "model_resid_med": 0.03572194032032497,
+   "first5": 0.4836479425430298,
+   "carrier_fx": 0.1078125,
+   "median_dphi_dx": 0.6302604675292969,
+   "direction_ok": true,
+   "cross": {
+    "ref": "gt15_rad.npy + gt15_mask.npy",
+    "sign": -1,
+    "a": -196.3548593435633,
+    "bx": 0.6302519826223105,
+    "by": 2.621553102482904e-05,
+    "median": 0.0016155461261391224,
+    "p95": 0.004802986541534437,
+    "max": 12.561326731534706,
+    "mean": 0.0030192551929765724,
+    "model": "deviation+plane"
+   },
+   "cross_alt": {
+    "ref": "gt15_rad.npy + gt15_mask.npy",
+    "sign": 1,
+    "k": -159,
+    "offset": 998.50244140625,
+    "median": 76.37158203125,
+    "p95": 166.1201171875,
+    "max": 197.971435546875,
+    "mean": 78.57343292236328,
+    "model": "offset"
+   },
+   "gt_convention": "deviation+plane",
+   "pass": true,
+   "gate": {
+    "cross_med_max": 0.05,
+    "cross_p95_max": 0.2,
+    "wrap_p95_max": 0.05,
+    "valid_frac_min": 0.1,
+    "ok_cross": true,
+    "ok_misc": true
+   }
+  },
+  {
+   "scene": "实测1",
+   "tier": "A",
+   "path": "F:\\paper\\1\\phase\\实测1",
+   "kind": "4step_bmp",
+   "gt": "fpp_shice_1_fourstep_purphase.mat",
+   "shape": [
+    700,
+    700
+   ],
+   "n_frames": 5,
+   "files": [
+    "fpp_shice_1_1.bmp",
+    "fpp_shice_1_2.bmp",
+    "fpp_shice_1_3.bmp",
+    "fpp_shice_1_4.bmp"
+   ],
+   "valid_frac": 0.9698816326530613,
+   "unit": "rad",
+   "unwrapped": true,
+   "range": [
+    -93.53660583496094,
+    179.4652099609375
+   ],
+   "wrap_p95": 0.00013756752014160156,
+   "jump_frac": 0.0,
+   "model_resid_med": 0.055170096897534354,
+   "first5": 0.6785022020339966,
+   "carrier_fx": -0.06142857142857143,
+   "median_dphi_dx": 0.3873262405395508,
+   "direction_ok": false,
+   "cross": {
+    "ref": "fpp_shice_1_fourstep_purphase.mat",
+    "sign": 1,
+    "k": -155,
+    "offset": 958.246826171875,
+    "median": 64.31643676757812,
+    "p95": 149.57565307617188,
+    "max": 163.78887939453125,
+    "mean": 69.18114471435547,
+    "model": "offset"
+   },
+   "cross_alt": {
+    "ref": "fpp_shice_1_fourstep_purphase.mat",
+    "sign": -1,
+    "a": -93.360166584972,
+    "bx": 0.3854492212836418,
+    "by": 0.0040074199443477215,
+    "median": 0.11619104668435654,
+    "p95": 0.5062942912433431,
+    "max": 64.45252059408962,
+    "mean": 0.17765572917680966,
+    "model": "deviation+plane"
+   },
+   "gt_convention": "total+offset",
+   "pass": false,
+   "gate": {
+    "cross_med_max": 0.1,
+    "cross_p95_max": 0.3,
+    "wrap_p95_max": 0.05,
+    "valid_frac_min": 0.1,
+    "ok_cross": false,
+    "ok_misc": true
+   }
+  },
+  {
+   "scene": "实测2",
+   "tier": "B",
+   "path": "F:\\paper\\1\\phase\\实测2",
+   "kind": "4step_bmp",
+   "gt": null,
+   "shape": [
+    595,
+    595
+   ],
+   "n_frames": 5,
+   "files": [
+    "fpp_shice_2_1.bmp",
+    "fpp_shice_2_2.bmp",
+    "fpp_shice_2_3.bmp",
+    "fpp_shice_2_4.bmp"
+   ],
+   "valid_frac": 0.9688496575100628,
+   "unit": "rad",
+   "unwrapped": true,
+   "range": [
+    -166.25550842285156,
+    152.29623413085938
+   ],
+   "wrap_p95": 0.00011944770812988281,
+   "jump_frac": 1.9032755371995205e-05,
+   "model_resid_med": 0.08161565753989138,
+   "first5": 0.5426180958747864,
+   "carrier_fx": -0.08571428571428572,
+   "median_dphi_dx": 0.5480384826660156,
+   "direction_ok": false,
+   "cross": null,
+   "cross_alt": null,
+   "gt_convention": "self-consistency only",
+   "pass": false,
+   "gate": {
+    "valid_frac_min": 0.1,
+    "wrap_p95_max": 0.05,
+    "model_resid_med_max": 0.1,
+    "first5_rms_max": 0.05,
+    "unwrap_jump_frac_max": 0.005,
+    "direction_sign_match": true
+   }
+  },
+  {
+   "scene": "实验3",
+   "tier": "B",
+   "path": "F:\\paper\\1\\phase\\实验3",
+   "kind": "4step_crop",
+   "gt": null,
+   "shape": [
+    667,
+    640
+   ],
+   "n_frames": 4,
+   "files": [
+    "cropped_fpp_shice_3_1.jpg",
+    "cropped_fpp_shice_3_2.jpg",
+    "cropped_fpp_shice_3_3.jpg",
+    "cropped_fpp_shice_3_4.jpg"
+   ],
+   "valid_frac": 0.9914987818590705,
+   "unit": "rad",
+   "unwrapped": true,
+   "range": [
+    -193.6070098876953,
+    194.154296875
+   ],
+   "wrap_p95": 0.00028967857360839844,
+   "jump_frac": 0.00024567137714828936,
+   "model_resid_med": 0.1316776129087251,
+   "first5": null,
+   "carrier_fx": -0.1,
+   "median_dphi_dx": 0.6055450439453125,
+   "direction_ok": false,
+   "cross": null,
+   "cross_alt": null,
+   "gt_convention": "self-consistency only",
+   "pass": false,
+   "gate": {
+    "valid_frac_min": 0.1,
+    "wrap_p95_max": 0.05,
+    "model_resid_med_max": 0.1,
+    "first5_rms_max": 0.05,
+    "unwrap_jump_frac_max": 0.005,
+    "direction_sign_match": true
+   }
+  },
+  {
+   "scene": "实验4",
+   "tier": "B",
+   "path": "F:\\paper\\1\\phase\\实验4",
+   "kind": "4step_crop",
+   "gt": null,
+   "shape": [
+    497,
+    530
+   ],
+   "n_frames": 4,
+   "files": [
+    "cropped_fpp_shice_3_1.jpg",
+    "cropped_fpp_shice_3_2.jpg",
+    "cropped_fpp_shice_3_3.jpg",
+    "cropped_fpp_shice_3_4.jpg"
+   ],
+   "valid_frac": 0.9960707642078889,
+   "unit": "rad",
+   "unwrapped": true,
+   "range": [
+    -157.64773559570312,
+    34.46251678466797
+   ],
+   "wrap_p95": 7.605552673339844e-05,
+   "jump_frac": 0.0015563577404897747,
+   "model_resid_med": 0.06811148828519156,
+   "first5": null,
+   "carrier_fx": 0.05660377358490566,
+   "median_dphi_dx": 0.3437347412109375,
+   "direction_ok": true,
+   "cross": null,
+   "cross_alt": null,
+   "gt_convention": "self-consistency only",
+   "pass": true,
+   "gate": {
+    "valid_frac_min": 0.1,
+    "wrap_p95_max": 0.05,
+    "model_resid_med_max": 0.1,
+    "first5_rms_max": 0.05,
+    "unwrap_jump_frac_max": 0.005,
+    "direction_sign_match": true
+   }
+  }
+ ],
+ "n_fail_B": 2,
+ "N_eff": 9,
+ "g7": {
+  "handled_need": null,
+  "n_P_min": 5,
+  "p_pass_need": null,
+  "status": "insufficient"
+ }
+}
