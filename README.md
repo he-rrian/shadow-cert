@@ -31,6 +31,15 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
 - 六个结论：① 去 Mondrian → P 过覆盖 0.932→0.959、宽度 +13.6%，不能修 OOD；② 去 RCPS → P 经验风险 3.77%、scene-any 32.2%，但官方 Bentkus/CP α=.05/.10 仍 abstain（负对照，不写 C4 有效）；③ 像素级 α=.05 **0.7147 ± 0.0132**，复现 0.715 崩盘；④ 去 ρ 门控 → U 混入，α=.10 pooled 风险 **10.02%**、U 风险 10.58% vs P 3.58%；⑤ κ̂ fixed vs MLQ → P 集 193→167 / 189→171（**P 成员变化 15.5%/12.7%**），C3 覆盖不变，C1 CP95 2.43/2.49→2.81/2.74%；⑥ Ω_roi 单帧估计 → 中位 IoU 0.976、mean 0.828、fallback 52.3%、dead 保留 0.828；P 场景 193→147 / 189→135，C1 CP95 4.22/4.59%，39–40% 场景因 dead 触边界判 U。
 - 口径：κ̂ “SG”只是 fixed-kernel proxy，不是真 SG7；Ω_roi 是消融，不进官方主表；所有阈值在看结果前固定，未用 test 回调。
 
+### GT audit（S7 真实 11 场景，2026-11-20 v2 锁定）
+- 代码：`code/w9_gt_audit.py`；报告：`probes/results/w9_gt_audit.md`；发现/决定：`w9_gt_audit_findings.md`；JSON：`w9_gt_audit.json`。
+- **6 PASS**：scene_01/04/05、Train（偏差相位+平面）、实测2（canonical）、实验4。
+- **3 GT-insufficient**：scene_02/03/06（旧 `skimage.unwrap_phase` 在一个大连通域上差 2π；badmask 同源不对齐）→ 不按连通域自动对齐、不用质量导向解包当 GT，修好 badmask 再 re-audit。
+- **1 Tier A FAIL**：实测1（mat 偏差+平面 median 0.116 / P95 0.506 vs 0.1/0.3）→ 只作定性，不进 G7 像素统计；不降 Tier B、不放宽阈值。
+- **1 Tier B FAIL**：实验3（4 步模型残差 0.132 > 0.10）。
+- **N_eff = 11 − 4 − 1 = 6 < 10 → G7 = insufficient**（不是 fail/pass）；“P 但 GT 不可评”单列 `P-class, GT-insufficient`，不进 P_pass 分子/分母。
+- re-audit 预注册（相位 + mask 双门槛）：见 `w9_gt_audit_findings.md` §3。
+
 ### 背景（S4/SF，历史）
 - W4 主口径（γ*=0.75，5% 风险）：val 认证 25.7% / test 25.2%，CP95 3.23% / 4.05%；严格 γ=1 0/109。
 - SynthFringe 唯一场景 450/450；严格协议 ε=0.05 无解，唯一合法 SF-test 20% 证书在 γ=0.20（162/450，CP 15.3%，block 15 CP 32.3%）→ SF 只作 G5-b 误差评测。
@@ -39,7 +48,7 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
 
 ### 下一步
 1. S6 收口已完成（A 口径）；交接 `doc/交接_S6到S7_2026-11-20.md`。
-2. **S7/W9 零重训 6 项已完成**（2026-11-20，本地 CPU）；下一步是 **真实 11 场景**：先做 GT audit（Tier A/B + N_eff 预注册规则），再上 GPU 推理；服务器等用户通知后开。
+2. **S7/W9 零重训 6 项 + 真实 11 场景 GT audit v2 已完成**（2026-11-20）；**N_eff=6 → G7 insufficient**。下一步不是“硬算 G7”，而是：修 scene_02/03/06 的 badmask/相位并 re-audit（相位+mask 双门槛已预注册）；真实推理仍需 GPU，服务器等用户通知。
 3. **W10 只做 3 项**（用户 2026-11-20 决定）：去 phasor（7→3 通道）、去 L_fc、hard-split 1:1 上采样 vs 主表纯混合。`log T̂` 更名/待 code audit；尺度增广按“S5 训练配方本就没有”作废，不硬映射。
 4. G7 口径：**empirical acceptance rule，不是 C4 证书**；`handled ≥ 8/11`、`n_P ≥ 5`、`P_pass ≥ ceil(0.8·n_P)`、`N_eff < 10 → insufficient`；P 空接受集 = abstain ≠ pass。
 5. 文档同步：标题 “Certified Recoverability and Distribution-Free Intervals...”；C4 只作附录 negative。
