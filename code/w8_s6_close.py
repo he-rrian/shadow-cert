@@ -163,9 +163,10 @@ def main():
     out = {}
     # C3 kappa sensitivity
     out["c3"] = {}
-    for name, ki in (("P75", 1), ("P90", 2)):
+    for name, ki in (("P50", 0), ("P75", 1), ("P90", 2)):
         out["c3"][name] = {a: c3_for(val, test, ki, a) for a in (0.05, 0.10, 0.20)}
     out["flip"] = flip_stats(val, test)
+    out["flip_p50"] = flip_stats(val, test, 1, 0)
     out["blocks"] = block_cov(val, test, 0.05)
     # C4 P-only
     out["c4"] = {}
@@ -181,7 +182,7 @@ def main():
     lines.append("## 1. C3 P-only under kappa P75 vs P90\n")
     lines.append("| kappa | alpha | n_cal P | n_test P | scene success | mean coverage |")
     lines.append("|---|---:|---:|---:|---:|---:|")
-    for name in ("P75", "P90"):
+    for name in ("P50", "P75", "P90"):
         for a in (0.05, 0.10, 0.20):
             r = out["c3"][name][a]
             lines.append(f"| {name} | {a:.2f} | {r['n_cal']} | {r['n_test']} | {r['scene_success']:.4f} | {r['mean_coverage']:.4f} |")
@@ -210,6 +211,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
