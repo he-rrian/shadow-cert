@@ -40,6 +40,12 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
 - **N_eff = 11 − 4 − 1 = 6 < 10 → G7 = insufficient**（不是 fail/pass）；“P 但 GT 不可评”单列 `P-class, GT-insufficient`，不进 P_pass 分子/分母。
 - re-audit 预注册（相位 + mask 双门槛）：见 `w9_gt_audit_findings.md` §3。
 
+### W10（需重训消融，代码就绪；等 GPU 服务器）
+- **只做 3 项**（用户 2026-11-20 决定）：去 phasor（7→3 通道：I/roi/M）、去 L_fc（权重 0）、hard-split 1:1 上采样 vs 主表纯混合。
+- 代码：`w5_train.py --no-phasor / --no-fc / --hard-split --hard-ratio 0.5`；`w5_model.make_input(use_phasor=False)` + `W5UNet(cin=3)`；`run_w10_ablations.sh`；评测端已加 `--no-phasor`（`w5_eval.py`、`w8_export_preds.py`、`w8_conformal.py`、`w8_rcps.py`）。
+- 审计：`probes/results/w10_code_audit.md`；`log T̂` 当前模型没有这个头，**不硬映射**；尺度增广 S5 配方本就没有，**not applicable**。
+- 预计 ~36 GPU·h（3 × 12），1 seed（seed 0）；G8 与 5-seed 主表同向。
+
 ### 背景（S4/SF，历史）
 - W4 主口径（γ*=0.75，5% 风险）：val 认证 25.7% / test 25.2%，CP95 3.23% / 4.05%；严格 γ=1 0/109。
 - SynthFringe 唯一场景 450/450；严格协议 ε=0.05 无解，唯一合法 SF-test 20% 证书在 γ=0.20（162/450，CP 15.3%，block 15 CP 32.3%）→ SF 只作 G5-b 误差评测。

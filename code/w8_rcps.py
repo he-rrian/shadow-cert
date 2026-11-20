@@ -97,10 +97,13 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--alphas", default="0.05,0.10,0.20")
     ap.add_argument("--gamma", type=float, default=0.75)
+    ap.add_argument("--no-phasor", action="store_true")
     a = ap.parse_args()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print("collect cal...", flush=True); cal = collect(a.ckpt, a.cal, device, a.gamma)
-    print("collect test...", flush=True); test = collect(a.ckpt, a.test, device, a.gamma)
+    print("collect cal...", flush=True); cal = collect(a.ckpt, a.cal, device, a.gamma,
+                                                       no_phasor=a.no_phasor)
+    print("collect test...", flush=True); test = collect(a.ckpt, a.test, device, a.gamma,
+                                                         no_phasor=a.no_phasor)
     out = dict(ckpt=a.ckpt, cal=a.cal, test=a.test, phi_tol=PHI_TOL, delta=DELTA,
                n_cal=len(cal), n_test=len(test), alphas=[])
     for al in [float(x) for x in a.alphas.split(",")]:

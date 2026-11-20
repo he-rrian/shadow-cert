@@ -32,7 +32,7 @@ def collate(batch):
     return {k: torch.from_numpy(np.stack([b[k] for b in batch])) for k in keys}
 
 
-def collect(ckpt, split, device="cuda", gamma=0.75):
+def collect(ckpt, split, device="cuda", gamma=0.75, no_phasor=False):
     import torch
     from torch.utils.data import DataLoader
     from w5_dataset import W5Dataset
@@ -40,13 +40,14 @@ def collect(ckpt, split, device="cuda", gamma=0.75):
     scenes = []
     with torch.no_grad():
         ck = torch.load(ckpt, map_location="cpu", weights_only=False)
-        m = W5UNet(base=128).to(device); m.load_state_dict(ck["model"]); m.eval()
+        m = W5UNet(base=128, cin=3 if no_phasor else 7).to(device)
+        m.load_state_dict(ck["model"]); m.eval()
         ds = W5Dataset(split, gamma=gamma, augment=False)
         ld = DataLoader(ds, batch_size=8, shuffle=False, num_workers=4, collate_fn=collate,
                         pin_memory=True, persistent_workers=True)
         for batch in ld:
             b = {k: v.to(device, non_blocking=True) for k, v in batch.items()}
-            dpsi, log_sigma, _, _, _ = split_output(m(make_input(b)))
+            dpsi, log_sigma, _, _, _ = split_output(m(make_input(b, use_phasor=not no_phasor)))
             psi = (b["h"].float().unsqueeze(1) + b["M"].float().unsqueeze(1) * dpsi).squeeze(1)
             sig = torch.exp(0.5 * log_sigma).squeeze(1)
             e = (psi - b["phi"].float()).abs()
@@ -129,10 +130,13 @@ def main():
     ap.add_argument("--alphas", default="0.05,0.10,0.20")
     ap.add_argument("--betas", default="0.05,0.10,0.20")
     ap.add_argument("--gamma", type=float, default=0.75)
+    ap.add_argument("--no-phasor", action="store_true")
     a = ap.parse_args()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"collect cal={a.cal} ...", flush=True); cal = collect(a.ckpt, a.cal, device, a.gamma)
-    print(f"collect test={a.test} ...", flush=True); test = collect(a.ckpt, a.test, device, a.gamma)
+    print(f"collect cal={a.cal} ...", flush=True); cal = collect(a.ckpt, a.cal, device, a.gamma,
+                                                                no_phasor=a.no_phasor)
+    print(f"collect test={a.test} ...", flush=True); test = collect(a.ckpt, a.test, device, a.gamma,
+                                                                   no_phasor=a.no_phasor)
     res = dict(ckpt=a.ckpt, cal=a.cal, test=a.test, n_cal=len(cal), n_test=len(test), grid=[])
     for al in [float(x) for x in a.alphas.split(",")]:
         for be in [float(x) for x in a.betas.split(",")]:

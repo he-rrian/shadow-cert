@@ -66,9 +66,11 @@ def fair_one(po, dp, roi, phi, dead):
 
 
 @torch.no_grad()
-def eval_split(ckpt, split, device="cuda", max_samples=0, baseline_cache=None, qual_dir=None):
+def eval_split(ckpt, split, device="cuda", max_samples=0, baseline_cache=None, qual_dir=None,
+               no_phasor=False):
     ck = torch.load(ckpt, map_location="cpu", weights_only=False)
-    model = W5UNet(base=128).to(device); model.load_state_dict(ck["model"]); model.eval()
+    model = W5UNet(base=128, cin=3 if no_phasor else 7).to(device)
+    model.load_state_dict(ck["model"]); model.eval()
     ds = W5Dataset(split, gamma=0.75, augment=False)
     ld = DataLoader(ds, batch_size=8, shuffle=False, num_workers=4, collate_fn=collate,
                     pin_memory=True, persistent_workers=True)
@@ -80,7 +82,7 @@ def eval_split(ckpt, split, device="cuda", max_samples=0, baseline_cache=None, q
     t0 = time.time()
     for bi, batch in enumerate(ld):
         batch = {k: v.to(device, non_blocking=True) for k, v in batch.items()}
-        out = model(make_input(batch))
+        out = model(make_input(batch, use_phasor=not no_phasor))
         dpsi, log_sigma, _, _, logits = split_output(out)
         psi = (batch["h"].float().unsqueeze(1) + batch["M"].float().unsqueeze(1) * dpsi).squeeze(1).cpu().numpy()
         phi = batch["phi"].cpu().numpy(); orr = batch["orr"].cpu().numpy()
@@ -197,6 +199,7 @@ def main():
     ap.add_argument("--splits", default="val,test,sf_test")
     ap.add_argument("--out", default="probes/results/w5_g5")
     ap.add_argument("--max-samples", type=int, default=0)
+    ap.add_argument("--no-phasor", action="store_true")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -206,7 +209,7 @@ def main():
         BRANCH_BY_SID = build_branch_map(split)
         cache = os.path.join(a.out, f"baseline_{split}.json")
         rows = eval_split(a.ckpt, split, device, a.max_samples, cache,
-                          os.path.join(a.out, "qual"))
+                          os.path.join(a.out, "qual"), no_phasor=a.no_phasor)
         json.dump(rows, open(os.path.join(a.out, f"rows_{split}.json"), "w"), indent=1)
         results[split] = gate(rows, split)
         json.dump(results[split], open(os.path.join(a.out, f"gate_{split}.json"), "w"), indent=1)

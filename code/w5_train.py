@@ -7,6 +7,9 @@ Three stages, 130 epochs total (following doc 濠碘槅鍋嗘晶妤呪€﹂崶�
 
 Run on the GPU server:
   python code/w5_train.py --seed 0 --out runs/w5_seed0
+  python code/w5_train.py --seed 0 --out runs/w10_nophasor_seed0 --no-phasor
+  python code/w5_train.py --seed 0 --out runs/w10_nofc_seed0 --no-fc
+  python code/w5_train.py --seed 0 --out runs/w10_hardsplit_seed0 --hard-split
 """
 import os, sys, json, time, argparse, random
 from collections import Counter
@@ -49,6 +52,28 @@ def class_weights(train_split, gamma):
     return w / w.mean(), dict(cnt)
 
 
+def hard_split_weights(train_split, gamma, hard_ratio=0.5):
+    """Per-sample weights for 1:1 hard-split oversampling (W10 ablation).
+
+    hard = rho >= 1 at gamma (the W4 diagnostic definition of a hard scene).
+    The main S5 table used plain mixed sampling (shuffle=True, no sampler); this
+    ablation oversamples hard scenes to `hard_ratio` of every epoch.
+    """
+    _, man = load_manifest(train_split)
+    flags = []
+    for s in man["shards"]:
+        z = np.load(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                 "data", train_split, s["path"]))
+        for m in z["meta"]:
+            _, rho = label_from_meta(json.loads(m), gamma)
+            flags.append(bool(np.isfinite(rho) and rho >= 1.0))
+    H = int(np.sum(flags)); N = len(flags) - H
+    if H == 0 or N == 0:
+        return None, dict(hard=H, normal=N)
+    w = np.where(flags, hard_ratio / H, (1.0 - hard_ratio) / N).astype(np.float64)
+    return w, dict(hard=H, normal=N)
+
+
 def phase_loss(psi, phi, roi, dead, branch_id=None):
     """Loss on ROI only.
 
@@ -74,7 +99,7 @@ def phase_loss(psi, phi, roi, dead, branch_id=None):
     return (e * w * roi_f * keep).sum() / (w * roi_f * keep).sum().clamp_min(1.0)
 
 
-def forward_losses(model, batch, weights, cls_w):
+def forward_losses(model, batch, weights, cls_w, use_phasor=True):
     I = batch["I"].float().unsqueeze(1) / 255.0
     phi = batch["phi"].float().unsqueeze(1)
     h = batch["h"].float().unsqueeze(1)
@@ -82,7 +107,7 @@ def forward_losses(model, batch, weights, cls_w):
     roi = batch["roi"].float().unsqueeze(1)
     dead = batch["dead"].float().unsqueeze(1)
     clean = batch["clean"].float().unsqueeze(1)
-    x = make_input(batch)
+    x = make_input(batch, use_phasor)
     out = model(x)
     dpsi, log_sigma, a_logit, b_logit, logits = split_output(out)
     psi = h + M * dpsi
@@ -110,11 +135,11 @@ def forward_losses(model, batch, weights, cls_w):
 
 
 @torch.no_grad()
-def validate(model, loader, device):
+def validate(model, loader, device, use_phasor=True):
     model.eval(); tot = 0.0; n = 0
     for batch in loader:
         batch = {k: v.to(device, non_blocking=True) for k, v in batch.items()}
-        x = make_input(batch)
+        x = make_input(batch, use_phasor)
         dpsi, _, _, _, _ = split_output(model(x))
         psi = batch["h"].float().unsqueeze(1) + batch["M"].float().unsqueeze(1) * dpsi
         tot += float(phase_loss(psi, batch["phi"].float().unsqueeze(1),
@@ -140,6 +165,11 @@ def main():
     ap.add_argument("--max-steps", type=int, default=0, help="smoke-test cap per epoch")
     ap.add_argument("--val-every", type=int, default=5)
     ap.add_argument("--skip-val", action="store_true")
+    # W10 ablations (3 items; logT / scale-aug are deliberately NOT mapped here)
+    ap.add_argument("--no-phasor", action="store_true", help="7->3 input channels (I, roi, M)")
+    ap.add_argument("--no-fc", action="store_true", help="L_fc weight = 0 in all stages")
+    ap.add_argument("--hard-split", action="store_true", help="rho>=1 oversampling vs plain mixed")
+    ap.add_argument("--hard-ratio", type=float, default=0.5, help="hard fraction per epoch (1:1 = 0.5)")
     a = ap.parse_args()
     set_seed(a.seed)
     out = a.out or os.path.join("runs", f"w5_seed{a.seed}")
@@ -154,7 +184,17 @@ def main():
     print(f"train class counts={cnt} weights={cw.round(3).tolist()}", flush=True)
     weights = dict(fc=0.0, nll=0.0, cls=0.0, smooth=0.0)
     cls_w = torch.tensor(cw, dtype=torch.float32, device=device)
-    ld_tr = DataLoader(ds_tr, batch_size=a.batch, shuffle=True, num_workers=a.workers,
+    sampler = None; hs = None
+    if a.hard_split:
+        hw, hs = hard_split_weights("train", a.gamma, a.hard_ratio)
+        if hw is None:
+            raise SystemExit(f"hard-split sampler unavailable: {hs}")
+        sampler = torch.utils.data.WeightedRandomSampler(
+            torch.DoubleTensor(hw), num_samples=len(ds_tr), replacement=True)
+        print(f"hard-split sampler: hard={hs['hard']} normal={hs['normal']} "
+              f"hard_ratio={a.hard_ratio}", flush=True)
+    ld_tr = DataLoader(ds_tr, batch_size=a.batch, shuffle=(sampler is None), sampler=sampler,
+                       num_workers=a.workers,
                        collate_fn=collate, pin_memory=True, persistent_workers=a.workers > 0,
                        prefetch_factor=2 if a.workers > 0 else None)
     ld_va = DataLoader(ds_va, batch_size=a.batch, shuffle=False, num_workers=max(2, a.workers // 2),
@@ -162,15 +202,17 @@ def main():
                        persistent_workers=a.workers > 0,
                        prefetch_factor=2 if a.workers > 0 else None)
 
-    model = W5UNet(base=128).to(device)
+    cin = 3 if a.no_phasor else 7
+    model = W5UNet(base=128, cin=cin).to(device)
     nparam = sum(p.numel() for p in model.parameters()) / 1e6
-    print(f"params={nparam:.2f}M", flush=True)
+    print(f"params={nparam:.2f}M cin={cin} no_fc={a.no_fc} hard_split={a.hard_split}", flush=True)
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=1e-4)
-    log = dict(args=vars(a), params_m=nparam, class_counts=cnt, class_weights=cw.tolist(),
-               stages=[], val=[])
+    log = dict(args=vars(a), params_m=nparam, cin=cin, class_counts=cnt,
+               class_weights=cw.tolist(), hard_split_counts=hs, stages=[], val=[])
     global_step = 0
     e1, e2, e3 = a.epochs1, a.epochs2, a.epochs3
     total_epochs = e1 + e2 + e3
+    fc_w = 0.0 if a.no_fc else 0.5
     weights.update(dict(fc=0.0, nll=0.0, cls=0.0, smooth=0.05))
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=max(total_epochs, 1), eta_min=a.lr * 0.02)
     best = 1e9; best3 = 1e9; prev_stage = 0
@@ -180,9 +222,9 @@ def main():
             if stage == 1:
                 weights.update(dict(fc=0.0, nll=0.0, cls=0.0, smooth=0.05))
             elif stage == 2:
-                weights.update(dict(fc=0.5, nll=0.0, cls=0.0, smooth=0.05))
+                weights.update(dict(fc=fc_w, nll=0.0, cls=0.0, smooth=0.05))
             else:
-                weights.update(dict(fc=0.5, nll=0.1, cls=0.1, smooth=0.05))
+                weights.update(dict(fc=fc_w, nll=0.1, cls=0.1, smooth=0.05))
             print(f"=== stage {stage} starts at global epoch {ep+1}: weights={weights}", flush=True)
             prev_stage = stage
         t0 = time.time(); agg = Counter(); n = 0
@@ -191,7 +233,8 @@ def main():
                 break
             batch = {k: v.to(device, non_blocking=True) for k, v in batch.items()}
             opt.zero_grad(set_to_none=True)
-            total, parts, _ = forward_losses(model, batch, weights, cls_w)
+            total, parts, _ = forward_losses(model, batch, weights, cls_w,
+                                              use_phasor=not a.no_phasor)
             total.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
             opt.step(); global_step += 1
@@ -207,7 +250,7 @@ def main():
         rec.update(epoch=ep + 1, stage=stage, step=global_step,
                    sec=time.time() - t0, lr=opt.param_groups[0]["lr"])
         if (not a.skip_val) and ((ep + 1) % a.val_every == 0 or ep + 1 == total_epochs):
-            vl = validate(model, ld_va, device)
+            vl = validate(model, ld_va, device, use_phasor=not a.no_phasor)
             rec["val_phase"] = vl
             log["val"].append(dict(epoch=ep + 1, stage=stage, val_phase=vl))
             if vl < best:

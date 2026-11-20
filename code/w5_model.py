@@ -87,12 +87,19 @@ def split_output(out):
     return dpsi, log_sigma, a_logit, b_logit, logits
 
 
-def make_input(batch):
-    """batch: dict of torch tensors from w5_dataset; returns 7-channel input."""
+def make_input(batch, use_phasor=True):
+    """batch: dict of torch tensors from w5_dataset; returns the model input.
+
+    use_phasor=True  -> 7 channels: I, sin(h-carrier), cos(h-carrier), roi, M,
+                        sin(carrier), cos(carrier)
+    use_phasor=False -> 3 channels: I, roi, M   (W10 "去 phasor" ablation)
+    """
     I = batch["I"].float().unsqueeze(1) / 255.0
     h = batch["h"].float().unsqueeze(1)
     M = batch["M"].float().unsqueeze(1)
     roi = batch["roi"].float().unsqueeze(1)
+    if not use_phasor:
+        return torch.cat([I, roi, M], 1)
     car2 = batch["carrier"].float()                 # (B,2) fy,fx
     B, _, H, W = h.shape
     yy = torch.arange(H, device=h.device, dtype=h.dtype)[None, None, :, None]
