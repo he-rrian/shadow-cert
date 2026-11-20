@@ -11,7 +11,7 @@ import numpy as np
 
 ROOT = r"F:\paper\2\P2"
 PHI_TOL = math.pi / 10
-DELTA = 0.05
+CONF_DELTA = 0.05   # confidence parameter delta for the risk bound (NOT delta_g=0.13 in the certificate)
 
 
 def load(seed, split):
@@ -34,7 +34,7 @@ def curves(cal, alpha, n_grid=200):
         e = np.array([np.mean((q["s"] <= L) & (q["e"] > PHI_TOL)) for q in cal])
         W = e - alpha * a + alpha
         var = float(W.var(ddof=1)) if len(W) > 1 else 0.0
-        L2 = math.log(2 / DELTA)
+        L2 = math.log(2 / CONF_DELTA)
         eps = math.sqrt(2 * var * L2 / n) + 7 * (1 + alpha) * L2 / (3 * max(n - 1, 1))
         u = float(W.mean() + eps - alpha)
         rows.append(dict(lam=float(L), acc=float(a.mean()), risk=float(e.sum() / max(a.sum(), 1e-9)), u=u))
