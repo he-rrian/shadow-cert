@@ -7,7 +7,7 @@
 
 ## 当前进度（2026-11-20 19:30）
 
-S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公平档 5/5）** → **S6/W8 ✅（A 口径：G6 OOD 未达 / C4 abstain 降级附录）** → **S7/W9 零重训消融 ✅（6/6，本地 CPU）** → S7 真实 11 场景 + W10 ⬜（等服务器） → S8 ⬜
+S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公平档 5/5）** → **S6/W8 ✅（A 口径：G6 OOD 未达 / C4 abstain 降级附录）** → **S7/W9 零重训消融 ✅（6/6，本地 CPU）** → **S7 GT audit v2 ✅（N_eff=6，G7 insufficient）** → **W10 代码就绪（3 项，等 GPU 服务器）** → S8 ⬜
 
 ### S5（已完成）
 - 数据：train 12,000 / val 1,500 / test 1,500（12.84 GB），SHA256 全绿；前端缓存 24 shard。
@@ -50,13 +50,13 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
 - W4 主口径（γ*=0.75，5% 风险）：val 认证 25.7% / test 25.2%，CP95 3.23% / 4.05%；严格 γ=1 0/109。
 - SynthFringe 唯一场景 450/450；严格协议 ε=0.05 无解，唯一合法 SF-test 20% 证书在 γ=0.20（162/450，CP 15.3%，block 15 CP 32.3%）→ SF 只作 G5-b 误差评测。
 - 口径文档：`doc/题目2_定义与实施前置.md` v3.2；S4 主报告 `doc/W4_基线与校准报告.md`；交接 `doc/交接_S4到S5_2026-11-17.md`。
-- 大白话版：`doc/给非专业读者的项目说明.md`（2026-11-18 更新到 S5/P0/W8 预检）。
+- 大白话版：`doc/给非专业读者的项目说明.md`（2026-11-20 更新到 S6 A 口径 + W9 + GT audit）。
 
 ### 下一步
 1. S6 收口已完成（A 口径）；交接 `doc/交接_S6到S7_2026-11-20.md`。
 2. **S7/W9 零重训 6 项 + 真实 11 场景 GT audit v2 已完成**（2026-11-20）；**N_eff=6 → G7 insufficient**。下一步不是“硬算 G7”，而是：修 scene_02/03/06 的 badmask/相位并 re-audit（相位+mask 双门槛已预注册）；真实推理仍需 GPU，服务器等用户通知。
 3. **W10 只做 3 项**（用户 2026-11-20 决定）：去 phasor（7→3 通道）、去 L_fc、hard-split 1:1 上采样 vs 主表纯混合。`log T̂` 更名/待 code audit；尺度增广按“S5 训练配方本就没有”作废，不硬映射。
-4. G7 口径：**empirical acceptance rule，不是 C4 证书**；`handled ≥ 8/11`、`n_P ≥ 5`、`P_pass ≥ ceil(0.8·n_P)`、`N_eff < 10 → insufficient`；P 空接受集 = abstain ≠ pass。
+4. G7 口径：**empirical acceptance rule，不是 C4 证书**；`handled ≥ ceil(8·N_eff/11)`、`n_P ≥ 5`、`P_pass ≥ ceil(0.8·n_P)`、`N_eff < 10 → insufficient`；P 空接受集 = abstain ≠ pass。
 5. 文档同步：标题 “Certified Recoverability and Distribution-Free Intervals...”；C4 只作附录 negative。
 
 
