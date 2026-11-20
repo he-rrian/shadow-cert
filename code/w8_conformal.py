@@ -14,49 +14,54 @@ This script is calibration/evaluation only -- no retraining.
 """
 import os, sys, json, argparse, math
 import numpy as np
-import torch
-from torch.utils.data import DataLoader
+
+# Torch / dataset imports are lazy so that the calibration math below
+# (q_high / tau_for / eval_cal / pixel_baseline) stays importable on a CPU-only
+# or torch-broken machine.  W9 zero-retrain ablations rely on that.
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from w5_dataset import W5Dataset, BRANCH_ID
-from w5_model import W5UNet, split_output, make_input
 
 NAMES = {0: "P", 1: "U", 2: "R"}
 
 
 def collate(batch):
+    import torch
     keys = ("I", "h", "M", "roi", "dead", "phi", "orr", "clean", "carrier", "y", "rho",
             "sid", "idx", "branch_id", "phi_obs", "dead_pred")
     return {k: torch.from_numpy(np.stack([b[k] for b in batch])) for k in keys}
 
 
-@torch.no_grad()
 def collect(ckpt, split, device="cuda", gamma=0.75):
-    ck = torch.load(ckpt, map_location="cpu", weights_only=False)
-    m = W5UNet(base=128).to(device); m.load_state_dict(ck["model"]); m.eval()
-    ds = W5Dataset(split, gamma=gamma, augment=False)
-    ld = DataLoader(ds, batch_size=8, shuffle=False, num_workers=4, collate_fn=collate,
-                    pin_memory=True, persistent_workers=True)
+    import torch
+    from torch.utils.data import DataLoader
+    from w5_dataset import W5Dataset
+    from w5_model import W5UNet, split_output, make_input
     scenes = []
-    for batch in ld:
-        b = {k: v.to(device, non_blocking=True) for k, v in batch.items()}
-        dpsi, log_sigma, _, _, _ = split_output(m(make_input(b)))
-        psi = (b["h"].float().unsqueeze(1) + b["M"].float().unsqueeze(1) * dpsi).squeeze(1)
-        sig = torch.exp(0.5 * log_sigma).squeeze(1)
-        e = (psi - b["phi"].float()).abs()
-        dead = b["dead"].bool()
-        y = b["y"].cpu().numpy(); sid = b["sid"].cpu().numpy()
-        br = b["branch_id"].cpu().numpy()
-        for j in range(len(psi)):
-            d = dead[j]
-            if not d.any():
-                continue
-            ee = e[j][d].cpu().numpy().astype(np.float64)
-            ss = sig[j][d].cpu().numpy().astype(np.float64)
-            ss = np.maximum(ss, 1e-6)
-            scenes.append(dict(sid=int(sid[j]), y=int(y[j]), branch=int(br[j]),
-                               score=(ee / ss), e=ee, s=ss))
+    with torch.no_grad():
+        ck = torch.load(ckpt, map_location="cpu", weights_only=False)
+        m = W5UNet(base=128).to(device); m.load_state_dict(ck["model"]); m.eval()
+        ds = W5Dataset(split, gamma=gamma, augment=False)
+        ld = DataLoader(ds, batch_size=8, shuffle=False, num_workers=4, collate_fn=collate,
+                        pin_memory=True, persistent_workers=True)
+        for batch in ld:
+            b = {k: v.to(device, non_blocking=True) for k, v in batch.items()}
+            dpsi, log_sigma, _, _, _ = split_output(m(make_input(b)))
+            psi = (b["h"].float().unsqueeze(1) + b["M"].float().unsqueeze(1) * dpsi).squeeze(1)
+            sig = torch.exp(0.5 * log_sigma).squeeze(1)
+            e = (psi - b["phi"].float()).abs()
+            dead = b["dead"].bool()
+            y = b["y"].cpu().numpy(); sid = b["sid"].cpu().numpy()
+            br = b["branch_id"].cpu().numpy()
+            for j in range(len(psi)):
+                d = dead[j]
+                if not d.any():
+                    continue
+                ee = e[j][d].cpu().numpy().astype(np.float64)
+                ss = sig[j][d].cpu().numpy().astype(np.float64)
+                ss = np.maximum(ss, 1e-6)
+                scenes.append(dict(sid=int(sid[j]), y=int(y[j]), branch=int(br[j]),
+                                   score=(ee / ss), e=ee, s=ss))
     return scenes
 
 
@@ -115,6 +120,7 @@ def pixel_baseline(cal, test, alpha, beta):
 
 
 def main():
+    import torch
     ap = argparse.ArgumentParser()
     ap.add_argument("--ckpt", required=True)
     ap.add_argument("--cal", default="val")

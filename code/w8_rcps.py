@@ -16,11 +16,9 @@ an anti-baseline.
 """
 import os, sys, json, argparse, math
 import numpy as np
-import torch
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from w8_conformal import collect
 
 PHI_TOL = math.pi / 10.0
 DELTA = 0.05
@@ -90,6 +88,8 @@ def curves(cal, test, alpha, n_grid=200):
 
 
 def main():
+    import torch
+    from w8_conformal import collect
     ap = argparse.ArgumentParser()
     ap.add_argument("--ckpt", required=True)
     ap.add_argument("--cal", default="val")

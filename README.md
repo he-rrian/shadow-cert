@@ -5,9 +5,9 @@
 
 > 规则：题目 2 的所有产物只放本目录；题目 3 的东西不要放进来。临时文件随手删。
 
-## 当前进度（2026-11-20 17:30）
+## 当前进度（2026-11-20 19:30）
 
-S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公平档 5/5）** → **S6/W8 ✅（A 口径：G6 OOD 未达 / C4 abstain 降级附录）** → S7/S8 ⬜
+S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公平档 5/5）** → **S6/W8 ✅（A 口径：G6 OOD 未达 / C4 abstain 降级附录）** → **S7/W9 零重训消融 ✅（6/6，本地 CPU）** → S7 真实 11 场景 + W10 ⬜（等服务器） → S8 ⬜
 
 ### S5（已完成）
 - 数据：train 12,000 / val 1,500 / test 1,500（12.84 GB），SHA256 全绿；前端缓存 24 shard。
@@ -25,6 +25,12 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
 - 报告：`probes/results/w8_summary.md`、`w8_s6_main_table.md`；图：`probes/results/w8_conformal/`、`w8_rcps/`。
 - 预测缓存：**compact dead-only 5-seed** `data/preds_compact/`（141 MB）；full 20 个 `.npz` 已下载本地 `data/preds_full/`（3,014 MB）。
 
+### W9（S7 零重训消融 6 项，2026-11-20 完成）
+- 代码：`code/w9_zero_retrain.py`（1–5）、`code/w9_roi.py`（6）；报告：`probes/results/w9_zero_retrain.md`；汇总 JSON：`w9_zero_retrain_all.json`。
+- 全部本地 CPU，无 GPU/无重训；**官方 C3 float32 主表未动**（0.9344/0.8857/0.7841）。
+- 六个结论：① 去 Mondrian → P 过覆盖 0.932→0.959、宽度 +13.6%，不能修 OOD；② 去 RCPS → P 经验风险 3.77%、scene-any 32.2%，但官方 Bentkus/CP α=.05/.10 仍 abstain（负对照，不写 C4 有效）；③ 像素级 α=.05 **0.7147 ± 0.0132**，复现 0.715 崩盘；④ 去 ρ 门控 → U 混入，α=.10 pooled 风险 **10.02%**、U 风险 10.58% vs P 3.58%；⑤ κ̂ fixed vs MLQ → P 集 193→167 / 189→171（**P 成员变化 15.5%/12.7%**），C3 覆盖不变，C1 CP95 2.43/2.49→2.81/2.74%；⑥ Ω_roi 单帧估计 → 中位 IoU 0.976、mean 0.828、fallback 52.3%、dead 保留 0.828；P 场景 193→147 / 189→135，C1 CP95 4.22/4.59%，39–40% 场景因 dead 触边界判 U。
+- 口径：κ̂ “SG”只是 fixed-kernel proxy，不是真 SG7；Ω_roi 是消融，不进官方主表；所有阈值在看结果前固定，未用 test 回调。
+
 ### 背景（S4/SF，历史）
 - W4 主口径（γ*=0.75，5% 风险）：val 认证 25.7% / test 25.2%，CP95 3.23% / 4.05%；严格 γ=1 0/109。
 - SynthFringe 唯一场景 450/450；严格协议 ε=0.05 无解，唯一合法 SF-test 20% 证书在 γ=0.20（162/450，CP 15.3%，block 15 CP 32.3%）→ SF 只作 G5-b 误差评测。
@@ -32,9 +38,11 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
 - 大白话版：`doc/给非专业读者的项目说明.md`（2026-11-18 更新到 S5/P0/W8 预检）。
 
 ### 下一步
-1. S6 收口已完成（A 口径）；当前交接 `doc/交接_S6到S7_2026-11-20.md`；
-2. S7：W9 零重训消融 6 项 + 真实 **11** 场景；W10 需重训消融 5 项；
-3. 文档同步：标题改为 “Certified Recoverability and Distribution-Free Intervals...”；C4 只作附录 negative。
+1. S6 收口已完成（A 口径）；交接 `doc/交接_S6到S7_2026-11-20.md`。
+2. **S7/W9 零重训 6 项已完成**（2026-11-20，本地 CPU）；下一步是 **真实 11 场景**：先做 GT audit（Tier A/B + N_eff 预注册规则），再上 GPU 推理；服务器等用户通知后开。
+3. **W10 只做 3 项**（用户 2026-11-20 决定）：去 phasor（7→3 通道）、去 L_fc、hard-split 1:1 上采样 vs 主表纯混合。`log T̂` 更名/待 code audit；尺度增广按“S5 训练配方本就没有”作废，不硬映射。
+4. G7 口径：**empirical acceptance rule，不是 C4 证书**；`handled ≥ 8/11`、`n_P ≥ 5`、`P_pass ≥ ceil(0.8·n_P)`、`N_eff < 10 → insufficient`；P 空接受集 = abstain ≠ pass。
+5. 文档同步：标题 “Certified Recoverability and Distribution-Free Intervals...”；C4 只作附录 negative。
 
 
 
@@ -69,7 +77,13 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
     w1_verify.py         V6 可达性 / V7 闭式界 / V7b 收敛 / V8 κ̂ 校准
     make_fig.py          八面板图
     results\
+      w9_zero_retrain.md          ★ W9 六项消融报告（当前）
+      w9_zero_retrain_all.json    W9 汇总 JSON
+      w8_s6_main_table.md         S6 C1–C4 主表
   code\                  生成器 / 基线 / 校准 / SF 导出与校验（w3_gen.py, w4_calibrate.py, w4_decide.py, w4_sf_recal.py, w3_gt_blocks.py, w3_export_sf.py, verify_w3.py, verify_sf.py）
+    w9_zero_retrain.py    W9 第 1–5 项（torch-free，compact）
+    w9_roi.py             W9 第 6 项（单帧 ROI 估计 + 代价）
+    w8_conformal.py / w8_rcps.py   已改 torch-lazy，CPU 可导入校准数学
   data\                  train/val/test 分片 + manifest（SHA256 冻结，12.84 GB）；sf_val/sf_test 各 690（450 vinf + 240 误差评测）
 ```
 
