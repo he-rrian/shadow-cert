@@ -62,15 +62,23 @@ python code/w5_train.py --seed 0 --out runs/w10_hardsplit_seed0  --hard-split --
 
 | 指标 | 脚本 | 说明 |
 |---|---|---|
-| G5 公平档（Ours/Biharm_SF、sliver/arc/blob） | `w5_eval.py --no-phasor`（仅 no-phasor 需要） | 与主表 `0.273 ± 0.013` 同向 |
-| C3 P-only 覆盖（α=.05/.10/.20） | `w8_conformal.py --no-phasor` + `w8_compact_preds.py` | 与主表 0.9344/0.8857/0.7841 同向；只作消融，不改官方主表 |
+| G5 公平档（Ours/Biharm_SF、sliver/arc/blob） | `w5_eval.py --no-phasor`（仅 no-phasor 需要） | **公平比值 = `gate_val.ours / gate_val.bih_sf`（val）**；主表 5-seed **0.2734 ± 0.0130**，seed0 单点 **0.2652** |
+| C3 P-only 覆盖（α=.05/.10/.20） | `w8_conformal.py --no-phasor` | 主表 0.9344/0.8857/0.7841；seed0 单点 0.931/0.884/0.799；只作消融，不改官方主表 |
 | C4 附录风险（如仍 abstain） | `w8_rcps.py --no-phasor` | 不把 C4 写成正面 |
 | 训练日志/参数量 | `train_log.json` | 记录 cin/参数量/FPS |
+
+**一键评测**：
+```bash
+# on the GPU server, from 2/P2, after training
+bash run_w10_eval.sh
+```
+输出：`probes/results/w10_{nophasor,nofc,hardsplit}_g5/`、`w10_*_c3.json`、`w10_*_rcps.json`。
+`run_w10_waiter.sh` 已排队：等 `runs/w10_all.log` 出现 `done.` 后自动执行 `run_w10_eval.sh`，写到 `runs/w10_eval.log`。
 
 **G8 判据**：消融结论与 5-seed 主表**同向**（不是“消融必须更差才合格”，而是“结论方向一致”）。方向写进报告：
 - 去 phasor：预期点误差↑/覆盖↓；
 - 去 L_fc：预期边缘/纹理区变差；
-- hard-split 1:1：预期 P 子集误差↓但 U/整体风险可能↑（方向按主表口径解释，不能反写）。
+- **hard-split 1:1 是反转项**：主表本身就是纯混合（`shuffle=True`，无 sampler）；消融是 `ρ≥1` 1:1 上采样。若上采样版没有显著更好，结论是 **“主表混合采样足够”**，不是“hard split 更好”。报告不能写反方向。
 
 ---
 
@@ -79,6 +87,7 @@ python code/w5_train.py --seed 0 --out runs/w10_hardsplit_seed0  --hard-split --
 - [x] `w5_model.make_input(use_phasor=False)` + `W5UNet(cin=3)`
 - [x] `w5_train.py --no-phasor / --no-fc / --hard-split`
 - [x] `w5_eval.py --no-phasor`、`w8_export_preds.py --no-phasor`、`w8_conformal.py --no-phasor`、`w8_rcps.py --no-phasor`
-- [x] `run_w10_ablations.sh`
-- [ ] 服务器执行 3 项重训（等用户开服务器）
+- [x] `run_w10_ablations.sh`（100 epoch 30/30/40，与 S5 主表同配方）
+- [x] `run_w10_eval.sh` + `run_w10_waiter.sh`（训练完自动 G8）
+- [x] 服务器执行 3 项重训（运行中，no-phasor 先；~9 GPU·h）
 - [ ] G8 表 + 与主表同向结论
