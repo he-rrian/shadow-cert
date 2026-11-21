@@ -47,7 +47,7 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
 - **G8 结果**（公平档 = `gate_val.ours / gate_val.bih_sf`，主表 5-seed **0.2734 ± 0.0130**）：
   - **去 phasor 0.3766（+37.7%）**，三形状全差，best val 0.668 vs 0.521 → **phasor 必要**；
   - **去 L_fc 0.2753（+0.7%）**，best val 0.5198 ≈ 0.5205，但 **SF 掉点 −3.4%→−11.9%** → **L_fc 主要保跨域/边缘，in-distribution 弱**（诚实 null/weak，不写“显著变差”）；
-  - **hard-split 0.2758（+0.9%）**，C3 覆盖低 3 pt、C4 略差、best val 略差 → **主表纯混合采样足够**（反转项，方向已写死）。
+  - **hard-split 0.2758（+0.9%；公平档越小越好，0.2758>0.2734 是略差）**，C3 覆盖低 3 pt、C4 略差、best val 略差 → **主表纯混合采样足够**（反转项，方向已写死）。唯一更好的是 SF 掉点（−0.59% vs −3.42%），单指标、std 6.4%，不能翻结论。
 - 报告：`probes/results/w10_g8_report.md`；代码审计：`w10_code_audit.md`；`log T̂` 不硬映射；尺度增广 not applicable。
 
 ### 背景（S4/SF，历史）
@@ -59,7 +59,7 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
 ### 下一步
 1. **S7 已收口**（2026-11-21）；当前交接 `doc/交接_S7到S8_2026-11-21.md`。S6 交接 `doc/交接_S6到S7_2026-11-20.md` 只作历史。
 2. **S8 写作**：主表 C1/C2/C3；C4 附录；真实部分写 **refusal correctness 11/11 + G7 insufficient**；W9/W10 消融表；标题用 “Certified Recoverability and Distribution-Free Intervals...”。
-3. **S8 第一件 GPU 任务**：真实 6 个 GT 可用场景（scene_01/04/05、Train、实测2、实验4）的定性 + 点误差表；不挂门禁，只作描述性。
+3. **真实 6 场景定性 + 点误差表已完成**（`probes/results/w9_real_qual.md`）：只有 **2/6** 场景 >75% 像素在 φ_tol 内（scene_01/05 好；scene_04/实验4 差；Train/实测2 中间）。描述性，不挂门禁；S8 直接引用。
 4. G7 已按 insufficient 收口（n_P=0）；不再尝试“把真实调成 P”，除非采集新的小孔遮挡数据。
 5. C4 只作附录 negative；pooled 70.6% 不是 P 接受率；C3 主表只写 P-only 0.9344/0.8857/0.7841。
 
@@ -100,6 +100,7 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
       w9_zero_retrain.md          ★ W9 六项消融报告
       w9_gt_audit_findings.md     ★ GT audit v2 + 锁定口径
       w9_real_c1.md               ★ 真实 refusal correctness 11/11
+      w9_real_qual.md             ★ 真实 6 场景点误差/图（描述性；2/6 >75% φ_tol）
       w10_g8_report.md            ★ W10 G8 三项对照
       w8_s6_main_table.md         S6 C1–C4 主表
   code\                  生成器 / 基线 / 校准 / SF 导出与校验（w3_gen.py, w4_calibrate.py, w4_decide.py, w4_sf_recal.py, w3_gt_blocks.py, w3_export_sf.py, verify_w3.py, verify_sf.py）
@@ -107,6 +108,7 @@ S0 ✅ → S1 ✅ → S2 ✅ → S3 ✅ → S4 ✅ → **S5 ✅（5 seeds，公�
     w9_roi.py             W9 第 6 项（单帧 ROI 估计 + 代价）
     w9_gt_audit.py        GT audit（Tier A/B + 预注册 re-audit）
     w9_real_c1.py         真实 C1 refusal gate（CPU，无模型）
+    w9_real_qual.py       真实 6 场景点误差/图（GPU，描述性）
     w5_train.py           W10 flags：--no-phasor / --no-fc / --hard-split
     w8_conformal.py / w8_rcps.py   已改 torch-lazy，CPU 可导入校准数学
   data\                  train/val/test 分片 + manifest（SHA256 冻结，12.84 GB）；sf_val/sf_test 各 690（450 vinf + 240 误差评测）
